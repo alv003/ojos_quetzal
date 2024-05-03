@@ -41,3 +41,10 @@ im_color = cv2.flip(im_color, 1)
 plt.imshow(im_color)
 plt.title('NDVI')
 plt.show()
+
+
+#Respecto a github
+"""
+todo se puede hacer sin la terminal
+
+"""
