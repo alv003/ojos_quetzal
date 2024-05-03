@@ -42,6 +42,4 @@ plt.imshow(im_color)
 plt.title('NDVI')
 plt.show()
 
-print("NDVI: ", Valor)
 
-"Hola Alvaro, este es el código que calcula el NDVI de una imagen. Para probarlo, debes tener dos imágenes, una en el canal rojo y otra en el canal infrarrojo."
