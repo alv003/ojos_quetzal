@@ -42,4 +42,8 @@ plt.imshow(im_color)
 plt.title('NDVI')
 plt.show()
 
+<<<<<<< HEAD
 #prueba
+=======
+print("NDVI: ", Valor)
+>>>>>>> e15f834eacc85c30857fc59c779b566ce3dba4ee
