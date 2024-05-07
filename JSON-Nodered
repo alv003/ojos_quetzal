@@ -1,0 +1,40 @@
+[
+    {
+        "id": "26dc6b3b16c7c70d",
+        "type": "mqtt in",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "topic": "Imagen",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "407a01e4.6b637",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 290,
+        "y": 240,
+        "wires": [
+            [
+                "9843740845807032"
+            ]
+        ]
+    },
+    {
+        "id": "407a01e4.6b637",
+        "type": "mqtt-broker",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    }
+]
