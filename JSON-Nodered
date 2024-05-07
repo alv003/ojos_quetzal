@@ -1,0 +1,464 @@
+$ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/master/deb/update-nodejs-and-nodered)
+
+[
+    {
+        "id": "c7cedd8aab9f4410",
+        "type": "tab",
+        "label": "Flow 3",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "26dc6b3b16c7c70d",
+        "type": "mqtt in",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "topic": "Imagen",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "407a01e4.6b637",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 290,
+        "y": 240,
+        "wires": [
+            [
+                "9843740845807032"
+            ]
+        ]
+    },
+    {
+        "id": "9843740845807032",
+        "type": "base64",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "action": "",
+        "property": "payload",
+        "x": 480,
+        "y": 240,
+        "wires": [
+            [
+                "d5fa3da7e823f53c",
+                "db680f98e4dda2ed"
+            ]
+        ]
+    },
+    {
+        "id": "d5fa3da7e823f53c",
+        "type": "image viewer",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "width": 160,
+        "data": "payload",
+        "dataType": "msg",
+        "active": true,
+        "x": 870,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "db680f98e4dda2ed",
+        "type": "change",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "mimetype",
+                "pt": "msg",
+                "to": "image/´ng",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 710,
+        "y": 180,
+        "wires": [
+            [
+                "3b3e5af7c94a511e"
+            ]
+        ]
+    },
+    {
+        "id": "3b3e5af7c94a511e",
+        "type": "ui_media",
+        "z": "c7cedd8aab9f4410",
+        "group": "68d6cdd4459096d8",
+        "name": "",
+        "width": 0,
+        "height": 0,
+        "order": 3,
+        "category": "",
+        "file": "",
+        "layout": "adjust",
+        "showcontrols": true,
+        "loop": true,
+        "onstart": false,
+        "scope": "local",
+        "tooltip": "",
+        "x": 910,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "92367b57a910f760",
+        "type": "ui_text",
+        "z": "c7cedd8aab9f4410",
+        "group": "54277383dc98cf81",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Ojos de Quetzal",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 380,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "064e9420fd559978",
+        "type": "mqtt out",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "topic": "data",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "407a01e4.6b637",
+        "x": 550,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "22117b5c5989bfc9",
+        "type": "ui_button",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "group": "54277383dc98cf81",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "NIR",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "1",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 290,
+        "y": 340,
+        "wires": [
+            [
+                "064e9420fd559978"
+            ]
+        ]
+    },
+    {
+        "id": "82ad4fd427f8a2c0",
+        "type": "ui_button",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "group": "54277383dc98cf81",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "RED",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "2",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 290,
+        "y": 380,
+        "wires": [
+            [
+                "064e9420fd559978"
+            ]
+        ]
+    },
+    {
+        "id": "259243319f5c67ff",
+        "type": "ui_button",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "group": "54277383dc98cf81",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "GREEN",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "4",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 300,
+        "y": 460,
+        "wires": [
+            [
+                "064e9420fd559978"
+            ]
+        ]
+    },
+    {
+        "id": "ee026cb245d7d988",
+        "type": "ui_button",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "group": "54277383dc98cf81",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "RED-EDGE",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "5",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 310,
+        "y": 500,
+        "wires": [
+            [
+                "064e9420fd559978"
+            ]
+        ]
+    },
+    {
+        "id": "db27c0a511e15fc0",
+        "type": "ui_button",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "group": "54277383dc98cf81",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "RGB",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "6",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 290,
+        "y": 300,
+        "wires": [
+            [
+                "064e9420fd559978"
+            ]
+        ]
+    },
+    {
+        "id": "6d2f0912b308c66c",
+        "type": "ui_button",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "group": "54277383dc98cf81",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "NDVI",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "3",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 290,
+        "y": 420,
+        "wires": [
+            [
+                "064e9420fd559978"
+            ]
+        ]
+    },
+    {
+        "id": "3a0effab12b89b3a",
+        "type": "ui_text",
+        "z": "c7cedd8aab9f4410",
+        "group": "68d6cdd4459096d8",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Imagen",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 840,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "707ad005ef0c59bf",
+        "type": "mqtt in",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "topic": "NDVI",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "407a01e4.6b637",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 690,
+        "y": 440,
+        "wires": [
+            [
+                "ca08e730e0e62da0"
+            ]
+        ]
+    },
+    {
+        "id": "ca08e730e0e62da0",
+        "type": "ui_text",
+        "z": "c7cedd8aab9f4410",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Índice NDVI",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "x": 930,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "8c9304ad6255a3d7",
+        "type": "ui_spacer",
+        "z": "c7cedd8aab9f4410",
+        "name": "spacer",
+        "group": "54277383dc98cf81",
+        "order": 2,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "408cb01191521a48",
+        "type": "ui_spacer",
+        "z": "c7cedd8aab9f4410",
+        "name": "spacer",
+        "group": "68d6cdd4459096d8",
+        "order": 1,
+        "width": 10,
+        "height": 1
+    },
+    {
+        "id": "ba3fed4b4dff75e7",
+        "type": "ui_spacer",
+        "z": "c7cedd8aab9f4410",
+        "name": "spacer",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 1,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "1ab09b54ce563c9f",
+        "type": "ui_spacer",
+        "z": "c7cedd8aab9f4410",
+        "name": "spacer",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 2,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "407a01e4.6b637",
+        "type": "mqtt-broker",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "68d6cdd4459096d8",
+        "type": "ui_group",
+        "name": "Group 2",
+        "tab": "649f19f5f793fe51",
+        "order": 2,
+        "disp": true,
+        "width": 10
+    },
+    {
+        "id": "54277383dc98cf81",
+        "type": "ui_group",
+        "name": "Group 1",
+        "tab": "649f19f5f793fe51",
+        "order": 1,
+        "disp": true,
+        "width": 6
+    },
+    {
+        "id": "88d8e41ba2c8c8ee",
+        "type": "ui_group",
+        "name": "Group 3",
+        "tab": "649f19f5f793fe51",
+        "order": 3,
+        "disp": true,
+        "width": 6
+    },
+    {
+        "id": "649f19f5f793fe51",
+        "type": "ui_tab",
+        "name": "Ojos De Quetzal",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]

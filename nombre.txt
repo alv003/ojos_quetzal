@@ -1,0 +1,19 @@
+kouriakova@rp24:~/Ojos de Quetzal $ /usr/bin/python "/home/kouriakova/Ojos de Quetzal/ojos_quetzal/NdviImplement.py"
+Traceback (most recent call last):
+  File "/home/kouriakova/Ojos de Quetzal/ojos_quetzal/NdviImplement.py", line 22, in <module>
+    client.connect(broker_address)          #connect to clint
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/paho/mqtt/client.py", line 914, in connect
+    return self.reconnect()
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/paho/mqtt/client.py", line 1044, in reconnect
+    sock = self._create_socket_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/paho/mqtt/client.py", line 3685, in _create_socket_connection
+    return socket.create_connection(addr, timeout=self._connect_timeout, source_address=source)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/socket.py", line 851, in create_connection
+    raise exceptions[0]
+  File "/usr/lib/python3.11/socket.py", line 836, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 111] Connection refused
