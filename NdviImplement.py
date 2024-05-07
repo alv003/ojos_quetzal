@@ -17,7 +17,7 @@ def on_message(client, userdata, message):
 #[Configuracion de la comunicacion]
 #Setup de mqtt
 comand = "no data"
-broker_address="10.25.91.11"            #Broker address
+broker_address="localhost"            #Broker address
 client = mqtt.Client("OjosDeQuetzal")   #Nombre del dispositivo
 client.connect(broker_address)          #connect to clint
 client.loop_start()                     #start loop
@@ -34,9 +34,9 @@ def send_IMG(img):
 #--------------------------------------------------------------------------------------------------------------------
 #[Comandos de imagen]
 def comands(number):
-    global im_color
-    NIR = cv2.imread("IMG_700101_001240_0000_NIR.tif", 0)
-    RED = cv2.imread("IMG_700101_001240_0000_RED.tif", 0)
+    global im_color 
+    NIR = cv2.imread(r"/home/kouriakova/Ojos de Quetzal/ojos_quetzal/IMG_700101_001240_0000_NIR.TIF", 0)
+    RED = cv2.imread(r"/home/kouriakova/Ojos de Quetzal/ojos_quetzal/IMG_700101_001240_0000_RED.TIF", 0)
     NDVI = im_color
     """
     RGB = cv2.imread(url_img_RED, 0)
@@ -93,7 +93,7 @@ class NDVICalculator:
 def main():
     global im_color
     calculator = NDVICalculator()
-    ndvi_image, Valor = calculator.ndvi_calculation("IMG_700101_001240_0000_RED.tif", "IMG_700101_001240_0000_NIR.tif")
+    ndvi_image, Valor = calculator.ndvi_calculation(r"/home/kouriakova/Ojos de Quetzal/ojos_quetzal/IMG_700101_001240_0000_RED.TIF", r"/home/kouriakova/Ojos de Quetzal/ojos_quetzal/IMG_700101_001240_0000_NIR.TIF")
     client.publish("NDVI", Valor)
     print(Valor)
 
