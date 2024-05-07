@@ -41,8 +41,5 @@ im_color = cv2.flip(im_color, 1)
 plt.imshow(im_color)
 plt.title('NDVI')
 plt.show()
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 3f7029411e82c92ce1d52538b5b9d29509d9c363
