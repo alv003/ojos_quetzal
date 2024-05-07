@@ -1,3 +1,5 @@
+$ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/master/deb/update-nodejs-and-nodered)
+
 [
     {
         "id": "26dc6b3b16c7c70d",
