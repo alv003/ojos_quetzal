@@ -1,19 +1,43 @@
-kouriakova@rp24:~/Ojos de Quetzal $ /usr/bin/python "/home/kouriakova/Ojos de Quetzal/ojos_quetzal/NdviImplement.py"
-Traceback (most recent call last):
-  File "/home/kouriakova/Ojos de Quetzal/ojos_quetzal/NdviImplement.py", line 22, in <module>
-    client.connect(broker_address)          #connect to clint
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3/dist-packages/paho/mqtt/client.py", line 914, in connect
-    return self.reconnect()
-           ^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3/dist-packages/paho/mqtt/client.py", line 1044, in reconnect
-    sock = self._create_socket_connection()
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3/dist-packages/paho/mqtt/client.py", line 3685, in _create_socket_connection
-    return socket.create_connection(addr, timeout=self._connect_timeout, source_address=source)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.11/socket.py", line 851, in create_connection
-    raise exceptions[0]
-  File "/usr/lib/python3.11/socket.py", line 836, in create_connection
-    sock.connect(sa)
-ConnectionRefusedError: [Errno 111] Connection refused
+    def estabilizador_imagen(self, imagen_base, imagen_a_estabilizar, radio=0.75, error_reproyeccion=4.0,
+                             coincidencias=False):
+        """This class returns a sequence of images taken from the camera stabilized with respect to the first image"""
+
+        # Get keypoints and features
+        (kpsBase, featuresBase) = self.obtener_puntos_interes(imagen_base)
+        (kpsAdicional, featuresAdicional) = self.obtener_puntos_interes(imagen_a_estabilizar)
+
+        # Find matches
+        M = self.encontrar_coincidencias(imagen_base, imagen_a_estabilizar, kpsBase, kpsAdicional, featuresBase,
+                                         featuresAdicional, radio)
+
+        if M is None:
+            print("Not enough matches")
+            return None
+
+        if len(M) > 4:
+            # Construct the two sets of points
+            ptsA = np.float32([kpsBase[i].pt for (_, i) in M])
+            ptsB = np.float32([kpsAdicional[i].pt for (i, _) in M])
+
+            # Compute the homography between the two sets of points
+            (H, status) = cv2.findHomography(ptsA, ptsB, cv2.RANSAC, reprojThresh)
+
+            # Apply homography to stabilize the second image
+            estabilizada = cv2.warpPerspective(imagen_a_estabilizar, H, (imagen_base.shape[1], imagen_base.shape[0]))
+            return estabilizada
+
+        print("No matches found")
+        return None
+
+    def img_alignment_sequoia(self, img_base, img_a_estabilizar, width, height):
+        """This class takes two images and makes a photogrammetric alignment.
+           Returns two aligned images"""
+
+        # Resize images to the same size
+        base_resized = cv2.resize(img_base, (width, height), interpolation=cv2.INTER_LINEAR)
+        additional_resized = cv2.resize(img_a_estabilizar, (width, height), interpolation=cv2.INTER_LINEAR)
+
+        # Stabilize the second image with respect to the first image
+        stabilized_image = self.estabilizador_imagen(base_resized, additional_resized)
+
+        return base_resized, stabilized_image
