@@ -12,7 +12,7 @@ class Correccion:
     def estabilizador_imagen(self, imagen_base, imagen_a_estabilizar, radio=0.75 , error_reproyeccion=4.0,
                              coincidencias=False):
         """Esta clase devuelve una secuencia de imágenes tomadas de la cámara estabilizada con respecto a la primera imagen"""
-
+        
         # Se obtienen los puntos deinterés
 
         (kpsBase, featuresBase) = self.obtener_puntos_interes(imagen_base)
@@ -118,30 +118,20 @@ width = 700
 height = 500
 
 # Reading images
-Img_RED = cv2.imread('IMG_700101_001324_0000_RED.tif',0)
-Img_NIR = cv2.imread('IMG_700101_001324_0000_NIR.tif',0)
+Img_RED = cv2.imread(r'/home/kouriakova/Ojos de Quetzal/ojos_quetzal/IMG_700101_001240_0000_RED.TIF',0)
+Img_NIR = cv2.imread(r'/home/kouriakova/Ojos de Quetzal/ojos_quetzal/IMG_700101_001240_0000_NIR.TIF',0)
+
 
 # Create a BGR image with the red and nir
-merged_fix_bad = cv2.merge((Img_RED, Img_NIR)) # First image, misaligned
+merged_fix_bad = cv2.merge((Img_RED,Img_RED,Img_NIR)) # First image, misaligned
 merged_fix_bad = cv2.resize(merged_fix_bad, (700, 500), interpolation=cv2.INTER_LINEAR)
 # Assuming merged_fix_bad is supposed to be an RGB image
-# Get the dimensions of the first array
-height, width = merged_fix_bad.shape[:2]
 
-# Create the second array with the same dimensions as the first array
-zeros = np.zeros((height, width))
-
-# Concatenate the arrays
-merged_fix_bad = np.dstack([merged_fix_bad, zeros])
 
 # img_base_NIR, img_RED, width, height
 stb_NIR, stb_RED =  correccion_img.img_alignment_sequoia(Img_NIR, Img_RED, width, height)
-merged_fix_stb = cv2.merge((stb_RED, stb_NIR))
+merged_fix_stb = cv2.merge((stb_RED,stb_RED, stb_NIR))
 
-# Do the same for the second merged image
-height, width = merged_fix_stb.shape[:2]
-zeros = np.zeros((height, width))
-merged_fix_stb = np.dstack([merged_fix_stb, zeros])
 
 # Use matplotlib to show the images
 plt.figure()
@@ -149,5 +139,7 @@ plt.subplot(1, 2, 1)
 plt.imshow(merged_fix_bad)
 plt.subplot(1, 2, 2)
 plt.imshow(merged_fix_stb)
+
+
 plt.title('Aligned image')
 plt.show()
