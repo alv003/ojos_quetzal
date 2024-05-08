@@ -4,7 +4,7 @@ import os.path
 import sys
 import matplotlib.pyplot as plt
 
-# Create Sift object
+# Create Sift object :3
 sift = cv2.SIFT_create()
 
 # radio, es el tamaño de la lente en centimetros
