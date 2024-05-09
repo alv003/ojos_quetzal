@@ -52,7 +52,7 @@ class Correccion:
                     (H, status) = self.encontrar_H_RANSAC_Estable(M, kpsBase, kpsAdicional, error_reproyeccion)
                     estabilizada = cv2.warpPerspective(imagen_base, H, (imagen_base.shape[1], imagen_base.shape[0]))
                     return estabilizada
-                print("sin coincidencias")
+                #print("sin coincidencias")
                 return None
 
             
@@ -186,7 +186,7 @@ while True:
         if key==ord('q'):
             cv2.destroyAllWindows()
             break
-    except KeyboardInterrupt:
+    except:
         print("STOP")
 
 cv2.destroyAllWindows()
