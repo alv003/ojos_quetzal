@@ -28,45 +28,48 @@ sift = cv2.SIFT_create()
 
 # radio, es el tamaño de la lente en centimetros
 class Correccion: 
-    def estabilizador_imagen(self, imagen_base, imagen_a_estabilizar, radio=0.75 , error_reproyeccion=4.0,
-                             coincidencias=False):
-        """Esta clase devuelve una secuencia de imágenes tomadas de la cámara estabilizada con respecto a la primera imagen"""
-        
-        # Se obtienen los puntos deinterés
+    def estabilizador_imagen(self, imagen_base, imagen_a_estabilizar, radio=0.75 , error_reproyeccion=4.0, coincidencias=False):     
+                
+                """Esta clase devuelve una secuencia de imágenes tomadas de la cámara estabilizada con respecto a la primera imagen"""
+                
+                # Se obtienen los puntos deinterés
 
-        (kpsBase, featuresBase) = self.obtener_puntos_interes(imagen_base)
-        (kpsAdicional, featuresAdicional) = self.obtener_puntos_interes(imagen_a_estabilizar)
-        # Se buscan las coincidencias        
+                (kpsBase, featuresBase) = self.obtener_puntos_interes(imagen_base)
+                (kpsAdicional, featuresAdicional) = self.obtener_puntos_interes(imagen_a_estabilizar)
+                # Se buscan las coincidencias        
 
-        M = self.encontrar_coincidencias(imagen_base, imagen_a_estabilizar, kpsBase, kpsAdicional, featuresBase,
-                                         featuresAdicional, radio)
+                M = self.encontrar_coincidencias(imagen_base, imagen_a_estabilizar, kpsBase, kpsAdicional, featuresBase,
+                                                featuresAdicional, radio)
 
-        if M is None:
-            print("pocas coincidencias")
-            return None
+                if M is None:
+                    print("pocas coincidencias")
+                    return None
 
-        if len(M) > 4:
-            # construct the two sets of points
+                if len(M) > 4:
+                    # construct the two sets of points
 
-            #            M2 = cv2.getPerspectiveTransform(ptsA,ptsB)
-            (H, status) = self.encontrar_H_RANSAC_Estable(M, kpsBase, kpsAdicional, error_reproyeccion)
-            estabilizada = cv2.warpPerspective(imagen_base, H, (imagen_base.shape[1], imagen_base.shape[0]))
-            return estabilizada
-        print("sin coincidencias")
-        return None
+                    #            M2 = cv2.getPerspectiveTransform(ptsA,ptsB)
+                    (H, status) = self.encontrar_H_RANSAC_Estable(M, kpsBase, kpsAdicional, error_reproyeccion)
+                    estabilizada = cv2.warpPerspective(imagen_base, H, (imagen_base.shape[1], imagen_base.shape[0]))
+                    return estabilizada
+                print("sin coincidencias")
+                return None
 
-    def img_alignment_sequoia(self, img_base_NIR, img_RED, width, height):
-        """This class takes two images given by Sequoia Camera and makes a photogrammetric
-        alignment. Returns two images (RED, NIR) aligned with each other"""
+            
+    def img_alignment_sequoia(self, img_base_NIR, img_RED, width, height):    
+            """This class takes two images given by Sequoia Camera and makes a photogrammetric
+            alignment. Returns two images (RED, NIR) aligned with each other"""
 
-        # Resize the images to the same size specified in image_SIZE
-        base_NIR = cv2.resize(img_base_NIR, (width, height), interpolation=cv2.INTER_LINEAR)
-        b_RED = cv2.resize(img_RED, (width, height), interpolation=cv2.INTER_LINEAR)
+            # Resize the images to the same size specified in image_SIZE
+            base_NIR = cv2.resize(img_base_NIR, (width, height), interpolation=cv2.INTER_LINEAR)
+            b_RED = cv2.resize(img_RED, (width, height), interpolation=cv2.INTER_LINEAR)
 
-        # Stabilize the RED image with respect to the NIR base image
-        stb_RED = self.estabilizador_imagen(b_RED, base_NIR)
+            # Stabilize the RED image with respect to the NIR base image
+            stb_RED = self.estabilizador_imagen(b_RED, base_NIR)
 
-        return base_NIR, stb_RED
+            return base_NIR, stb_RED
+
+
 
     # --------------------------------------------------------------------------
     def obtener_puntos_interes(self, imagen):
@@ -80,7 +83,7 @@ class Correccion:
     # --------------------------------------------------------------------------
     def encontrar_coincidencias(self, img1, img2, kpsA, kpsB, featuresA, featuresB, ratio):
         """Metodo para estimar la homografia"""
-
+        #alv003 oye aqui ponle un try y acaba con un except
         matcher = cv2.DescriptorMatcher_create("BruteForce")
         rawMatches = matcher.knnMatch(featuresA, featuresB, 2)
         matches = []
@@ -157,10 +160,14 @@ while True:
 
 
         # img_base_NIR, img_RED, width, height
-        stb_NIR, stb_RED =  correccion_img.img_alignment_sequoia(Img_NIR, Img_RED, width, height)
-        merged_fix_stb = cv2.merge((stb_RED,stb_RED, stb_NIR))
+        try:   
+            stb_NIR, stb_RED =  correccion_img.img_alignment_sequoia(Img_NIR, Img_RED, width, height)
+            merged_fix_stb = cv2.merge((stb_RED,stb_RED, stb_NIR))
+        
+        except:
+            merged_fix_stb=merged_fix_bad
 
-        time.sleep(.5)
+        #time.sleep(.1)
         # Use matplotlib to show the images
         #plt.figure()
         #plt.subplot(1, 2, 1)
