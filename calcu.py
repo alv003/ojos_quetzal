@@ -83,7 +83,6 @@ class Correccion:
     # --------------------------------------------------------------------------
     def encontrar_coincidencias(self, img1, img2, kpsA, kpsB, featuresA, featuresB, ratio):
         """Metodo para estimar la homografia"""
-        #alv003 oye aqui ponle un try y acaba con un except
         matcher = cv2.DescriptorMatcher_create("BruteForce")
         rawMatches = matcher.knnMatch(featuresA, featuresB, 2)
         matches = []
@@ -132,9 +131,6 @@ class Correccion:
             return (H, status)
 
         return None
-
-
-
 
 while True:
     try:
