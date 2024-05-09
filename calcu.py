@@ -3,6 +3,25 @@ import numpy as np
 import os.path
 import sys
 import matplotlib.pyplot as plt
+from picamera2 import Picamera2, Preview
+import time
+
+
+cam0=Picamera2(0)
+cam1=Picamera2(1)
+
+#set camaras
+cam0.preview_configuration.main.size = (700,500)
+cam1.preview_configuration.main.size = (700,500)
+cam0.preview_configuration.main.format = "XBGR8888"
+cam1.preview_configuration.main.format = "XBGR8888"
+cam0.preview_configuration.align()
+cam1.preview_configuration.align()
+cam0.configure("preview")
+cam1.configure("preview")
+cam0.start()
+cam1.start()
+
 
 # Create Sift object :3
 sift = cv2.SIFT_create()
@@ -112,34 +131,55 @@ class Correccion:
         return None
 
 
-correccion_img = Correccion()
-#define image size
-width = 700
-height = 500
-
-# Reading images
-Img_RED = cv2.imread(r'/home/kouriakova/Ojos de Quetzal/ojos_quetzal/IMG_700101_001240_0000_RED.TIF',0)
-Img_NIR = cv2.imread(r'/home/kouriakova/Ojos de Quetzal/ojos_quetzal/IMG_700101_001240_0000_NIR.TIF',0)
 
 
-# Create a BGR image with the red and nir
-merged_fix_bad = cv2.merge((Img_RED,Img_RED,Img_NIR)) # First image, misaligned
-merged_fix_bad = cv2.resize(merged_fix_bad, (700, 500), interpolation=cv2.INTER_LINEAR)
-# Assuming merged_fix_bad is supposed to be an RGB image
+while True:
+    try:
+        frame0 = cam0.capture_array()
+        frame1 = cam1.capture_array()
+
+        pframe0 = cv2.cvtColor(frame0,cv2.COLOR_BGR2GRAY)
+        pframe1 = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
+
+        correccion_img = Correccion()
+        #define image size
+        width = 700
+        height = 500
+
+        # Reading images
+        Img_RED = pframe0
+        Img_NIR = pframe1
+
+        # Create a BGR image with the red and nir
+        merged_fix_bad = cv2.merge((Img_RED,Img_RED,Img_NIR)) # First image, misaligned
+        merged_fix_bad = cv2.resize(merged_fix_bad, (700, 500), interpolation=cv2.INTER_LINEAR)
+        # Assuming merged_fix_bad is supposed to be an RGB image
 
 
-# img_base_NIR, img_RED, width, height
-stb_NIR, stb_RED =  correccion_img.img_alignment_sequoia(Img_NIR, Img_RED, width, height)
-merged_fix_stb = cv2.merge((stb_RED,stb_RED, stb_NIR))
+        # img_base_NIR, img_RED, width, height
+        stb_NIR, stb_RED =  correccion_img.img_alignment_sequoia(Img_NIR, Img_RED, width, height)
+        merged_fix_stb = cv2.merge((stb_RED,stb_RED, stb_NIR))
+
+        time.sleep(.5)
+        # Use matplotlib to show the images
+        #plt.figure()
+        #plt.subplot(1, 2, 1)
+        #plt.imshow(merged_fix_bad)
+        #plt.subplot(1, 2, 2)
+        #plt.imshow(merged_fix_stb)
 
 
-# Use matplotlib to show the images
-plt.figure()
-plt.subplot(1, 2, 1)
-plt.imshow(merged_fix_bad)
-plt.subplot(1, 2, 2)
-plt.imshow(merged_fix_stb)
+        #plt.title('Aligned image')
+        #plt.show()
 
+        #'cv2.imshow('cam0',pframe0)
+        #cv2.imshow('cam1',pframe1)
+        cv2.imshow('merge', merged_fix_stb)
+        key = cv2.waitKey(1) & 0xFF
+        if key==ord('q'):
+            cv2.destroyAllWindows()
+            break
+    except KeyboardInterrupt:
+        print("STOP")
 
-plt.title('Aligned image')
-plt.show()
+cv2.destroyAllWindows()
