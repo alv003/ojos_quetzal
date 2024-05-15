@@ -11,7 +11,9 @@ import io
 import base64
 
 
-c= np.array([[ 1.00715201e+00, -2.32810839e-02, -3.88794829e+01], [7.54220558e-03,  9.75861385e-01,  2.86827547e+01], [3.51586112e-05, -7.40422299e-05,  1.00000000e+00]])
+#c= np.array([[ 1.00715201e+00, -2.32810839e-02, -3.88794829e+01], [7.54220558e-03,  9.75861385e-01,  2.86827547e+01], [3.51586112e-05, -7.40422299e-05,  1.00000000e+00]])
+c=np.array([[ 9.94024085e-01, -2.97656751e-02, -3.60910470e+01], [-9.76327155e-03,  9.67355238e-01,  3.71420592e+01], [ 1.60864403e-05, -9.07830029e-05,  1.00000000e+00]] ) 
+
 global im_color
 
 
@@ -102,9 +104,7 @@ def comands(number):
 #-----------------------------------------------------------------------------------------------------------------------------------
 #[Clase para calcular el índice NDVI]
 class NDVICalculator:
-    def ndvi_calculation(self, url_img_RED, url_img_NIR, width=700, height=500):
-        img_RED = cv2.imread(url_img_RED, 0)
-        img_NIR = cv2.imread(url_img_NIR, 0)
+    def ndvi_calculation(self, img_RED, img_NIR, width=700, height=500):
 
         img_RED = cv2.resize(img_RED, (width, height), interpolation=cv2.INTER_LINEAR)
         img_NIR = cv2.resize(img_NIR, (width, height), interpolation=cv2.INTER_LINEAR)
@@ -113,11 +113,11 @@ class NDVICalculator:
         nir = np.array(img_NIR, dtype=float)
 
         check = np.logical_and(red > 1, nir > 1)
-
-        ndvi = np.where(check, (nir - red) / (nir + red), 0)
-        matrix = ndvi * (-1)
+        suma = np.where(((nir + red) == 0), 0.01, (nir + red))
+        ndvi = np.where(check, (nir - red) / suma, 0)
+        
+        matrix = ndvi
         Valor = np.nanmean(matrix, where=matrix > 0)
-        #Valor = Valor * (-1)
 
         if ndvi.min() < 0:
             ndvi = ndvi + (ndvi.min() * -1)
@@ -130,75 +130,45 @@ class NDVICalculator:
         return ndvi_image, Valor
 
 #-----------------------------------------------------------------------------------------------------------------------------------
-
-
+#[MAIN]
 while True:
-    try:
-        global im_color
 
-        frame0 = cam0.capture_array()
-        frame1 = cam1.capture_array()
+    frame0 = cam0.capture_array()
+    frame1 = cam1.capture_array()
 
-        pframe0 = cv2.cvtColor(frame0,cv2.COLOR_BGR2GRAY)
-        pframe1 = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
+    pframe0 = cv2.cvtColor(frame0,cv2.COLOR_BGR2GRAY)
+    pframe1 = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
 
-        correccion_img = Correccion()
-        calculator = NDVICalculator()
+    #try:
+    correccion_img = Correccion()
+    calculator = NDVICalculator()
 
-        #define image size
-        width = 700
-        height = 500
+    #define image size
+    width = 700
+    height = 500
 
-        # Reading images
-        Img_RED = pframe0
-        Img_NIR = pframe1
+    # Reading images
+    Img_RED = pframe0
+    Img_NIR = pframe1
 
-        # Create a BGR image with the red and nir
-        merged_fix_bad = cv2.merge((Img_RED,Img_RED,Img_NIR)) # First image, misaligned
-        merged_fix_bad = cv2.resize(merged_fix_bad, (700, 500), interpolation=cv2.INTER_LINEAR)
-        # Assuming merged_fix_bad is supposed to be an RGB image
+    # Create a BGR image with the red and nir
+    merged_fix_bad = cv2.merge((Img_RED,Img_RED,Img_NIR)) # First image, misaligned
+    merged_fix_bad = cv2.resize(merged_fix_bad, (700, 500), interpolation=cv2.INTER_LINEAR)
+    # Assuming merged_fix_bad is supposed to be an RGB image
 
+    stb_NIR, stb_RED =  correccion_img.img_alignment_sequoia(Img_NIR, Img_RED, width, height)
+    merged_fix_stb = cv2.merge((stb_RED,stb_RED, stb_NIR))
+    ndvi_image, Valor = calculator.ndvi_calculation(stb_RED,stb_NIR)
+    client.publish("NDVI", Valor)
+    #rotate ndvi_image
+    ndvi_image = np.flipud(ndvi_image)
+    "Se pinta la imagen con colormap de OpenCV. En mi caso, RAINBOW fue la mejor opción"
+    im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_JET)
+    im_color = cv2.flip(im_color, 1)
+    im_color = im_color[0:450, 50:700]
+    send_IMG(im_color)
+    
 
-        # img_base_NIR, img_RED, width, height
-        try:   
-            stb_NIR, stb_RED =  correccion_img.img_alignment_sequoia(Img_NIR, Img_RED, width, height)
-            merged_fix_stb = cv2.merge((stb_RED,stb_RED, stb_NIR))
-            merged_fix_stb = merged_fix_stb[50:500, 0:650]
-            
-            ndvi_image, Valor = calculator.ndvi_calculation(stb_RED,stb_NIR)
-            client.publish("NDVI", Valor)
-            print(Valor)
-            #rotate ndvi_image
-            ndvi_image = np.flipud(ndvi_image)
-            "Se pinta la imagen con colormap de OpenCV. En mi caso, RAINBOW fue la mejor opción"
-            im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_JET)
-            im_color = cv2.flip(im_color, 1)
-            send_IMG(im_color)
-
-            cv2.imshow('merge', merged_fix_stb)
-            key = cv2.waitKey(1) & 0xFF
-            if key==ord('q'):
-                cv2.destroyAllWindows()
-                break
-        
-        except:
-            merged_fix_stb=merged_fix_bad
-            merged_fix_stb = merged_fix_stb[50:500, 0:650]
-            client.publish("cuidado", -50)
-            print(-50)
-            send_IMG(merged_fix_bad)
-
-            if key==ord('q'):
-                cv2.destroyAllWindows()
-                break
-        
-
-        
-
-
-
-    except:
-        print("STOP")
 
 cv2.destroyAllWindows()
 
