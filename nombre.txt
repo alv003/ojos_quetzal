@@ -1,8 +1,6 @@
-venv) kouriakova@rp24:~/OjosdeQuetzal/libcamera/build $ make -n
-/usr/bin/cmake -S/home/kouriakova/OjosdeQuetzal/libcamera/build/meson-private/cmake_lttng-ust -B/home/kouriakova/OjosdeQuetzal/libcamera/build --check-build-system CMakeFiles/Makefile.cmake 0
-/usr/bin/cmake -E cmake_progress_start /home/kouriakova/OjosdeQuetzal/libcamera/build/CMakeFiles /home/kouriakova/OjosdeQuetzal/libcamera/build//CMakeFiles/progress.marks
-make -s -f CMakeFiles/Makefile2 all
-/usr/bin/cmake -E cmake_progress_start /home/kouriakova/OjosdeQuetzal/libcamera/build/CMakeFiles 0
+(venv) kouriakova@rp24:~/OjosdeQuetzal/libcamera/build $ make
+(venv) kouriakova@rp24:~/OjosdeQuetzal/libcamera/build $ sudo make install
+make: *** No rule to make target 'install'.  Stop.
 
 
 
