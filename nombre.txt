@@ -1,9 +1,13 @@
-sudo apt install -y libboost-dev libgnutls28-dev openssl meson ninja-build python3-pip python3-yaml python3-ply
+sudo apt update
+sudo apt install cmake libdrm-dev libjpeg-dev libpng-dev libusb-dev libjpeg-turbo8-dev libavcodec-dev libavformat-dev libavutil-dev libtiff-dev
 
-git clone https://git.libcamera.org/libcamera/libcamera.git
+git clone https://github.com/raspberrypi/libcamera.git
+
 cd libcamera
 mkdir build
 cd build
-meson setup ..
-ninja
-sudo ninja install
+cmake ..
+make
+sudo make install
+
+libcamera --version
