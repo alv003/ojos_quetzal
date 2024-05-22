@@ -45,4 +45,20 @@ def take_photo():
     counter += 1
 
 
+*   
+
+Traceback (most recent call last):
+  File "/home/kouriakova/Desktop/Newservos.py", line 10, in <module>
+    pwm = Adafruit_PCA9685.PCA9685(address=0x40, busnum=1)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kouriakova/OjosdeQuetzal/venv/lib/python3.11/site-packages/Adafruit_PCA9685/PCA9685.py", line 75, in __init__
+    self.set_all_pwm(0, 0)
+  File "/home/kouriakova/OjosdeQuetzal/venv/lib/python3.11/site-packages/Adafruit_PCA9685/PCA9685.py", line 111, in set_all_pwm
+    self._device.write8(ALL_LED_ON_L, on & 0xFF)
+  File "/home/kouriakova/OjosdeQuetzal/venv/lib/python3.11/site-packages/Adafruit_GPIO/I2C.py", line 114, in write8
+    self._bus.write_byte_data(self._address, register, value)
+  File "/home/kouriakova/OjosdeQuetzal/venv/lib/python3.11/site-packages/Adafruit_PureIO/smbus.py", line 316, in write_byte_data
+    self._device.write(data)
+TimeoutError: [Errno 110] Connection timed out
+
 
