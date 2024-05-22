@@ -1,3 +1,4 @@
+from __future__ import division
 import cv2
 import numpy as np
 import os.path
@@ -9,12 +10,45 @@ import time
 import paho.mqtt.client as mqtt  
 import io
 import base64
+import time
+import Adafruit_PCA9685
+
 
 
 #c= np.array([[ 1.00715201e+00, -2.32810839e-02, -3.88794829e+01], [7.54220558e-03,  9.75861385e-01,  2.86827547e+01], [3.51586112e-05, -7.40422299e-05,  1.00000000e+00]])
 c=np.array([[ 9.94024085e-01, -2.97656751e-02, -3.60910470e+01], [-9.76327155e-03,  9.67355238e-01,  3.71420592e+01], [ 1.60864403e-05, -9.07830029e-05,  1.00000000e+00]] ) 
 
-global im_color
+#variables globales
+IO=False #empieza el programa sin la camara activada
+opcion=0 #opcion de mostrar imagen
+
+#Grados de Filtros IR
+in1= 110 
+in2= 110 
+
+out1=161
+out2=161
+
+#Grados pasa bandas
+rRED= 97  
+rEDGE= 57 
+
+lNIR=95   
+lGREEN=55 
+
+lout=135
+rout=139
+
+
+#GPIO
+pwm = Adafruit_PCA9685.PCA9685(address=0x40, busnum=1)
+
+# Configure min and max servo pulse lengths
+servo_min = 90  # Min pulse length out of 4096
+servo_max = 610  # Max pulse length out of 4096
+
+# Set frequency to 60hz, good for servos.
+pwm.set_pwm_freq(60)
 
 
 cam0=Picamera2(0)
@@ -90,12 +124,30 @@ def comands(number):
     for i in range (6):
         if(i == int(number)):
             if(i == 1):
+                #NIR
                 send_IMG(NIR)
             elif(i == 2):
                 send_IMG(RED)
             elif(i == 3):
                 send_IMG(NDVI)
+                opcion=3
+
             elif(i == 4):
+                send_IMG(NIR)#GREEN
+                opcion=4
+                
+            elif(i == 5):
+                send_IMG(RED)#EDGE
+                opcion=5
+
+            elif(i == 6):
+                send_IMG(NIR)#RGB ##corregir
+                opcion=6
+
+#Comandos de encendido y apagado
+            elif(i == 8):
+                IO=False
+                opcion=8
                 
                 
 """
@@ -134,7 +186,66 @@ class NDVICalculator:
         return ndvi_image, Valor
 
 #-----------------------------------------------------------------------------------------------------------------------------------
-#[MAIN]
+#Revisa y linealiza valores
+
+def map_range(x, in_min, in_max, out_min, out_max):
+# Check for zero division
+  if in_max - in_min == 0:
+    return out_min
+
+  # Calculate the slope of the mapping line
+  slope = (out_max - out_min) / (in_max - in_min)
+
+  # Apply the linear mapping formula
+  return out_min + slope * (x - in_min)
+
+#-----------------------------------------------------------------------------------------------------------------------------------
+#Convercion de grados a pulsos 
+
+def maping(x):
+   y = int(float(x))
+   mapped_value = map_range(y, 0, 180, servo_min, servo_max)
+   new = int(mapped_value)
+   return new
+
+#-----------------------------------------------------------------------------------------------------------------------------------
+#Funcion para posicionar servo
+
+def posicion(grados1, grados2, servo): 
+        #RED
+        ch1Deg = maping(grados1)
+        #NIR
+        ch2Deg = maping(grados2)
+
+        if servo==1:#Channel 4 & 6  IR
+            n1=4  #R
+            n2=6  #L
+        elif servo==2:#Channel 5 & 7 Filter passband
+            n1=5
+            n2=7
+
+        pwm.set_pwm(n1, 0, ch1Deg)
+        pwm.set_pwm(n2, 0, ch2Deg)
+        time.sleep(0.6)
+        pwm.set_pwm(n1, ch1Deg, 0)
+        pwm.set_pwm(n2, ch2Deg, 0)
+        time.sleep(0.6)
+
+#-----------------------------------------------------------------------------------------------------------------------------------
+#MAIN
+
+#Acomodar Servos
+ch57Deg = maping(135)
+ch46Deg = maping(110)
+pwm.set_pwm(4, ch46Deg, 0)
+pwm.set_pwm(6, ch46Deg, 0)
+pwm.set_pwm(5, ch57Deg, 0)
+pwm.set_pwm(7, ch57Deg, 0)
+time.sleep(0.2)
+
+posicion(in1,in2, 1)#
+
+
 while True:
 
     frame0 = cam0.capture_array()
@@ -167,12 +278,29 @@ while True:
     #rotate ndvi_image
     ndvi_image = np.flipud(ndvi_image)
     "Se pinta la imagen con colormap de OpenCV. En mi caso, RAINBOW fue la mejor opción"
-    im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_JET)
-    im_color = cv2.flip(im_color, 1)
-    im_color = im_color[0:450, 50:700]
-    send_IMG(im_color)
+    im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_RAINBOW)
+    #im_color = cv2.flip(im_color, 1)
+
+    stb_RED = stb_RED[50:500, 0:650] 
+    im_color = im_color[50:500, 0:650] 
+
+    if (IO==True)&(opcion==3): #NDVI
+        send_IMG(im_color)
+
+    elif(IO==True)&(opcion==2): #RED
+        send_IMG(stb_RED)
     
+    elif(IO==True)&(opcion==1): #NIR
+        send_IMG(stb_NIR)
 
+    elif(IO==True)&(opcion==6): #RGB #corregir
+        send_IMG(stb_NIR)
 
-cv2.destroyAllWindows()
+    elif(IO==True)&(opcion==5): #REDGE
+        send_IMG(stb_RED)
+    
+    elif(IO==True)&(opcion==4): #GREEN
+        send_IMG(stb_NIR)
 
+    
+    

@@ -1,39 +1,17 @@
+ouriakova@rp24:~ $ sudo pip3 install adafruit-circuitpython-pca9685
+error: externally-managed-environment
 
+× This environment is externally managed
+╰─> To install Python packages system-wide, try apt install
+    python3-xyz, where xyz is the package you are trying to
+    install.
+    
+    If you wish to install a non-Debian-packaged Python package,
+    create a virtual environment using python3 -m venv path/to/venv.
+    Then use path/to/venv/bin/python and path/to/venv/bin/pip. Make
+    sure you have python3-full installed.
+    
+    For more information visit http://rptl.io/venv
 
-CODIGO PARA VIDEO 
-
-# Open the video files
-cap_RED = cv2.VideoCapture('/path/to/your/video_RED.mp4')
-cap_NIR = cv2.VideoCapture('/path/to/your/video_NIR.mp4')
-
-# Check if video opened successfully
-if (cap_RED.isOpened()== False or cap_NIR.isOpened()== False): 
-  print("Error opening video stream or file")
-
-# Read until video is completed
-while(cap_RED.isOpened() and cap_NIR.isOpened()):
-  # Capture frame-by-frame
-  ret_RED, frame_RED = cap_RED.read()
-  ret_NIR, frame_NIR = cap_NIR.read()
-  
-  if ret_RED == True and ret_NIR == True:
-    # img_base_NIR, img_RED, width, height
-    stb_NIR, stb_RED =  correccion_img.img_alignment_sequoia(frame_NIR, frame_RED, width, height)
-    merged_fix_stb = cv2.merge((stb_RED,stb_RED, stb_NIR))
-
-    # Use matplotlib to show the images
-    plt.figure()
-    plt.imshow(merged_fix_stb)
-    plt.title('Aligned image')
-    plt.show()
-
-  # Break the loop
-  else: 
-    break
-
-# When everything done, release the video capture object
-cap_RED.release()
-cap_NIR.release()
-
-# Closes all the frames
-cv2.destroyAllWindows()
+note: If you believe this is a mistake, please contact your Python installation or OS distribution provider. You can override this, at the risk of breaking your Python installation or OS, by passing --break-system-packages.
+hint: See PEP 668 for the detailed specification.
