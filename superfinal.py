@@ -11,15 +11,12 @@ import io
 import base64
 
 
-#Matriz del alineacion de la imagen
 #c= np.array([[ 1.00715201e+00, -2.32810839e-02, -3.88794829e+01], [7.54220558e-03,  9.75861385e-01,  2.86827547e+01], [3.51586112e-05, -7.40422299e-05,  1.00000000e+00]])
 c=np.array([[ 9.94024085e-01, -2.97656751e-02, -3.60910470e+01], [-9.76327155e-03,  9.67355238e-01,  3.71420592e+01], [ 1.60864403e-05, -9.07830029e-05,  1.00000000e+00]] ) 
 
-#variables globales
-IO=False
-opcion=0
+global im_color
 
-#Iniciar camaras
+
 cam0=Picamera2(0)
 cam1=Picamera2(1)
 
@@ -35,11 +32,10 @@ cam1.configure("preview")
 cam0.start()
 cam1.start()
 
-# Create Sift object 
+# Create Sift object :3
 sift = cv2.SIFT_create()
 
-#-----------------------------------------------------------------------------------------------------------------------------------
-#Alineacion de imagen
+# radio, es el tamaño de la lente en centimetros
 class Correccion: 
             
     def img_alignment_sequoia(self, img_base_NIR, img_RED, width, height):    
@@ -53,7 +49,8 @@ class Correccion:
             
             return base_NIR, stb_RED
 
-#-----------------------------------------------------------------------------------------------------------------------------------
+
+#--------------------------------------------------------------------------------------------------------------------
 #[Configuracion de lectura]
 def on_message(client, userdata, message):
     mes = str(message.payload.decode("utf-8"))
@@ -77,48 +74,37 @@ def send_IMG(img):
     image_data = buf.getvalue()
     encoded_image = base64.b64encode(image_data).decode('utf-8')
     client.publish("Imagen", encoded_image)
-    #client.loop_stop()    
-
 #--------------------------------------------------------------------------------------------------------------------
 #[Comandos de imagen]
 def comands(number):
-    global stb_NIR
-    global stb_RED
-    global im_color
-    global IO 
-    global opcion
-
-    NIR = stb_NIR
-    RED = stb_RED
+    global im_color 
+    global IO
+    NIR = cv2.imread(r"/home/kouriakova/Ojos de Quetzal/ojos_quetzal/IMG_700101_001240_0000_NIR.TIF", 0)
+    RED = cv2.imread(r"/home/kouriakova/Ojos de Quetzal/ojos_quetzal/IMG_700101_001240_0000_RED.TIF", 0)
     NDVI = im_color
-
-
-    for i in range (10):  #rango de 0-9
+    """
+    RGB = cv2.imread(url_img_RED, 0)
+    RE = cv2.imread(url_img_RED, 0)
+    GREEN = cv2.imread(url_img_RED, 0)
+    """
+    for i in range (6):
         if(i == int(number)):
             if(i == 1):
                 send_IMG(NIR)
-                opcion=1
             elif(i == 2):
                 send_IMG(RED)
-                opcion=2
             elif(i == 3):
                 send_IMG(NDVI)
-                opcion=3
-#Comandos de posiscion
-
-
-
-#Comandos de encendido y apagado
-            elif(i == 8):
-                IO=False
-                opcion=8
+            elif(i == 4):
                 
-            elif(i == 9):
-                IO=True
-                opcion=9
-            
-
-
+                
+"""
+            elif(i == 4):
+                send_IMG(NIR)
+            elif(i == 5):
+                send_IMG(NIR)
+            elif(i == 6):
+                send_IMG(NIR)"""
 #-----------------------------------------------------------------------------------------------------------------------------------
 #[Clase para calcular el índice NDVI]
 class NDVICalculator:
@@ -131,30 +117,24 @@ class NDVICalculator:
         nir = np.array(img_NIR, dtype=float)
 
         check = np.logical_and(red > 1, nir > 1)
-        ndvi = np.where(check, (nir - red) / (nir + red), 0) 
+        suma = np.where(((nir + red) == 0), 0.01, (nir + red))
+        ndvi = np.where(check, (nir - red) / suma, 0)
         
         matrix = ndvi
-        ro=matrix.max()-matrix.min()
-        rd=2
-        
-        Valor = round(np.mean(matrix),3)
-        
-        vd=((Valor-matrix.min())*rd/ro)-1
-        vd=round(vd,2)
-
-        #print(vd) #validar    
+        Valor = np.nanmean(matrix, where=matrix > 0)
 
         if ndvi.min() < 0:
             ndvi = ndvi + (ndvi.min() * -1)
 
         ndvi = (ndvi * 255) / ndvi.max()
         ndvi = ndvi.round()
+
         ndvi_image = np.array(ndvi, dtype=np.uint8)
 
-        return ndvi_image, vd
+        return ndvi_image, Valor
 
 #-----------------------------------------------------------------------------------------------------------------------------------
-   
+#[MAIN]
 while True:
 
     frame0 = cam0.capture_array()
@@ -185,26 +165,14 @@ while True:
     ndvi_image, Valor = calculator.ndvi_calculation(stb_RED,stb_NIR)
     client.publish("NDVI", Valor)
     #rotate ndvi_image
-    #ndvi_image = np.flipud(ndvi_image)
+    ndvi_image = np.flipud(ndvi_image)
     "Se pinta la imagen con colormap de OpenCV. En mi caso, RAINBOW fue la mejor opción"
-    im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_RAINBOW)
-    #im_color = cv2.flip(im_color, 1)
-    im_color = im_color[50:500, 0:650] 
-
-    if (IO==True)&(opcion==3): #NDVI
-        send_IMG(im_color)
-
-    elif(IO==True)&(opcion==2): #RED
-        send_IMG(stb_RED)
-    
-    elif(IO==True)&(opcion==1): #NIR
-        send_IMG(stb_NIR)
-    
+    im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_JET)
+    im_color = cv2.flip(im_color, 1)
+    im_color = im_color[0:450, 50:700]
+    send_IMG(im_color)
     
 
 
-#-----------------------------------------------------------------------------------------------------------------------------------
-#[Main]
-
-#while
+cv2.destroyAllWindows()
 

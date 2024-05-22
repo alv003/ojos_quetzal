@@ -155,4 +155,3 @@ plt.subplot(1, 2, 2)
 plt.imshow(merged_fix_stb)
 plt.title('Imagen alineada')
 plt.show()
-
