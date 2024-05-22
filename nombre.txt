@@ -1,17 +1,48 @@
-ouriakova@rp24:~ $ sudo pip3 install adafruit-circuitpython-pca9685
-error: externally-managed-environment
+#Funcion para tomar 1 fotografia usando la clase NDVICalculator y guardar la imagen
+counter = 0
+def take_photo():
+    global counter
+    frame0 = cam0.capture_array()
+    frame1 = cam1.capture_array()
 
-× This environment is externally managed
-╰─> To install Python packages system-wide, try apt install
-    python3-xyz, where xyz is the package you are trying to
-    install.
-    
-    If you wish to install a non-Debian-packaged Python package,
-    create a virtual environment using python3 -m venv path/to/venv.
-    Then use path/to/venv/bin/python and path/to/venv/bin/pip. Make
-    sure you have python3-full installed.
-    
-    For more information visit http://rptl.io/venv
+    pframe0 = cv2.cvtColor(frame0,cv2.COLOR_BGR2GRAY)
+    pframe1 = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
 
-note: If you believe this is a mistake, please contact your Python installation or OS distribution provider. You can override this, at the risk of breaking your Python installation or OS, by passing --break-system-packages.
-hint: See PEP 668 for the detailed specification.
+    correccion_img = Correccion()
+    calculator = NDVICalculator()
+
+    #define image size
+    width = 700
+    height = 500
+
+    # Reading images
+    Img_RED = pframe0
+    Img_NIR = pframe1
+
+    # Create a BGR image with the red and nir
+    merged_fix_bad = cv2.merge((Img_RED,Img_RED,Img_NIR)) # First image, misaligned
+    merged_fix_bad = cv2.resize(merged_fix_bad, (700, 500), interpolation=cv2.INTER_LINEAR)
+    # Assuming merged_fix_bad is supposed to be an RGB image
+
+    stb_NIR, stb_RED =  correccion_img.img_alignment_sequoia(Img_NIR, Img_RED, width, height)
+    merged_fix_stb = cv2.merge((stb_RED,stb_RED, stb_NIR))
+    ndvi_image, Valor = calculator.ndvi_calculation(stb_RED,stb_NIR)
+    ###client.publish("NDVI", Valor)
+    #rotate ndvi_image
+    ndvi_image = np.flipud(ndvi_image)
+    "Se pinta la imagen con colormap de OpenCV. En mi caso, RAINBOW fue la mejor opción"
+    im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_RAINBOW)
+    #im_color = cv2.flip(im_color, 1)
+
+    stb_RED = stb_RED[50:500, 0:650] 
+    im_color = im_color[50:500, 0:650] 
+
+    mandarfotos = send_IMG(im_color)
+
+    #Crea la imagen
+    filename = f"imagen_{counter}.jpg"
+    cv2.imwrite(filename, mandarfotos)
+    counter += 1
+
+
+
