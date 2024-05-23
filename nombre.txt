@@ -48,7 +48,12 @@ def take_photo():
     cv2.imwrite(filename, mandarfotos)
     counter += 1
 
-
+def send_IMG(img):
+    buf = io.BytesIO()
+    plt.imsave(buf, img, format='png')  
+    image_data = buf.getvalue()
+    encoded_image = base64.b64encode(image_data).decode('utf-8')
+    client.publish("Imagen", encoded_image)
 *   
 
 Traceback (most recent call last):
