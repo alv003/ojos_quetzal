@@ -1,5 +1,6 @@
 $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/master/deb/update-nodejs-and-nodered)
 
+
 [
     {
         "id": "c7cedd8aab9f4410",
@@ -8,6 +9,271 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
         "disabled": false,
         "info": "",
         "env": []
+    },
+    {
+        "id": "407a01e4.6b637",
+        "type": "mqtt-broker",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "649f19f5f793fe51",
+        "type": "ui_tab",
+        "name": "Ojos De Quetzal",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "68d6cdd4459096d8",
+        "type": "ui_group",
+        "name": "Captación",
+        "tab": "649f19f5f793fe51",
+        "order": 2,
+        "disp": true,
+        "width": "10",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "54277383dc98cf81",
+        "type": "ui_group",
+        "name": "Opciones",
+        "tab": "649f19f5f793fe51",
+        "order": 1,
+        "disp": true,
+        "width": "5",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "88d8e41ba2c8c8ee",
+        "type": "ui_group",
+        "name": "Info.",
+        "tab": "649f19f5f793fe51",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "a25444a3fc186506",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-light",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#0094CE",
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#fafafa",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#1bbfff",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#0094ce",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "light"
+            }
+        },
+        "site": {
+            "name": "Node-RED Dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "06dc800ea3cc7a33",
+        "type": "ui_spacer",
+        "z": "c7cedd8aab9f4410",
+        "name": "spacer",
+        "group": "54277383dc98cf81",
+        "order": 2,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "0385ce53323c78fe",
+        "type": "ui_spacer",
+        "z": "c7cedd8aab9f4410",
+        "name": "spacer",
+        "group": "54277383dc98cf81",
+        "order": 7,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "3fd696cbaa81c0d8",
+        "type": "ui_spacer",
+        "z": "c7cedd8aab9f4410",
+        "name": "spacer",
+        "group": "68d6cdd4459096d8",
+        "order": 2,
+        "width": 10,
+        "height": 1
+    },
+    {
+        "id": "d034b81076097168",
+        "type": "ui_spacer",
+        "z": "c7cedd8aab9f4410",
+        "name": "spacer",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 2,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "5dff27c8c67b325d",
+        "type": "ui_spacer",
+        "z": "c7cedd8aab9f4410",
+        "name": "spacer",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 4,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "e17ee7ae62d0fe45",
+        "type": "ui_spacer",
+        "z": "c7cedd8aab9f4410",
+        "name": "spacer",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 6,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "7f434499bd5b4110",
+        "type": "ui_spacer",
+        "z": "c7cedd8aab9f4410",
+        "name": "spacer",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 9,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "04e69942c8cb1d53",
+        "type": "ui_spacer",
+        "z": "c7cedd8aab9f4410",
+        "name": "spacer",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 12,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "f19d4e1a2b6b7d73",
+        "type": "ui_spacer",
+        "z": "c7cedd8aab9f4410",
+        "name": "spacer",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 15,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "b2ee1851c371dd0f",
+        "type": "ui_spacer",
+        "z": "c7cedd8aab9f4410",
+        "name": "spacer",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 17,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "e7f619b1bb9e97fb",
+        "type": "ui_spacer",
+        "z": "c7cedd8aab9f4410",
+        "name": "spacer",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 19,
+        "width": 6,
+        "height": 1
     },
     {
         "id": "26dc6b3b16c7c70d",
@@ -96,6 +362,86 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
                 "b1caf0a9c014f140"
             ]
         ]
+    },
+    {
+        "id": "b1caf0a9c014f140",
+        "type": "debug",
+        "z": "c7cedd8aab9f4410",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "7a9743f15c088015",
+        "type": "inject",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 250,
+        "y": 100,
+        "wires": [
+            [
+                "e301330c0c924aa9"
+            ]
+        ]
+    },
+    {
+        "id": "67a5bdfba18eab27",
+        "type": "function",
+        "z": "c7cedd8aab9f4410",
+        "name": "function 1",
+        "func": "msg.IP=msg.payload[0].address+\":1880/ui\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 100,
+        "wires": [
+            [
+                "f344b67f74bed6ae",
+                "6cc2d40b1cb04873"
+            ]
+        ]
+    },
+    {
+        "id": "f344b67f74bed6ae",
+        "type": "debug",
+        "z": "c7cedd8aab9f4410",
+        "name": "Direccion IP",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 770,
+        "y": 100,
+        "wires": []
     },
     {
         "id": "d5fa3da7e823f53c",
@@ -197,7 +543,7 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
         "z": "c7cedd8aab9f4410",
         "name": "",
         "group": "54277383dc98cf81",
-        "order": 8,
+        "order": 6,
         "width": 0,
         "height": 0,
         "passthru": false,
@@ -246,199 +592,6 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
                 "064e9420fd559978"
             ]
         ]
-    },
-    {
-        "id": "92367b57a910f760",
-        "type": "ui_text",
-        "z": "c7cedd8aab9f4410",
-        "group": "54277383dc98cf81",
-        "order": 1,
-        "width": 0,
-        "height": 0,
-        "name": "",
-        "label": "Ojos de Quetzal",
-        "format": "{{msg.payload}}",
-        "layout": "row-spread",
-        "className": "",
-        "style": true,
-        "font": "Times New Roman,Times,serif",
-        "fontSize": "30",
-        "color": "#000000",
-        "x": 260,
-        "y": 40,
-        "wires": []
-    },
-    {
-        "id": "3a0effab12b89b3a",
-        "type": "ui_text",
-        "z": "c7cedd8aab9f4410",
-        "group": "68d6cdd4459096d8",
-        "order": 2,
-        "width": 0,
-        "height": 0,
-        "name": "",
-        "label": "Imagen",
-        "format": "{{msg.payload}}",
-        "layout": "row-spread",
-        "className": "",
-        "style": true,
-        "font": "Times New Roman,Times,serif",
-        "fontSize": "30",
-        "color": "#000000",
-        "x": 760,
-        "y": 300,
-        "wires": []
-    },
-    {
-        "id": "ca08e730e0e62da0",
-        "type": "ui_text",
-        "z": "c7cedd8aab9f4410",
-        "group": "88d8e41ba2c8c8ee",
-        "order": 3,
-        "width": 0,
-        "height": 0,
-        "name": "",
-        "label": "Índice seleccionado",
-        "format": "{{msg.payload}}",
-        "layout": "col-center",
-        "className": "",
-        "style": true,
-        "font": "Times New Roman,Times,serif",
-        "fontSize": "25",
-        "color": "#000000",
-        "x": 430,
-        "y": 240,
-        "wires": []
-    },
-    {
-        "id": "9843740845807032",
-        "type": "base64",
-        "z": "c7cedd8aab9f4410",
-        "name": "",
-        "action": "",
-        "property": "payload",
-        "x": 380,
-        "y": 340,
-        "wires": [
-            [
-                "d5fa3da7e823f53c",
-                "db680f98e4dda2ed"
-            ]
-        ]
-    },
-    {
-        "id": "b1caf0a9c014f140",
-        "type": "debug",
-        "z": "c7cedd8aab9f4410",
-        "name": "debug 1",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 400,
-        "y": 200,
-        "wires": []
-    },
-    {
-        "id": "7a9743f15c088015",
-        "type": "inject",
-        "z": "c7cedd8aab9f4410",
-        "name": "",
-        "props": [
-            {
-                "p": "payload"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": true,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 250,
-        "y": 100,
-        "wires": [
-            [
-                "e301330c0c924aa9"
-            ]
-        ]
-    },
-    {
-        "id": "e301330c0c924aa9",
-        "type": "hostip",
-        "z": "c7cedd8aab9f4410",
-        "name": "Host IP",
-        "x": 400,
-        "y": 100,
-        "wires": [
-            [
-                "67a5bdfba18eab27"
-            ]
-        ]
-    },
-    {
-        "id": "67a5bdfba18eab27",
-        "type": "function",
-        "z": "c7cedd8aab9f4410",
-        "name": "function 1",
-        "func": "msg.IP=msg.payload[0].address+\":1880/ui\";\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 540,
-        "y": 100,
-        "wires": [
-            [
-                "f344b67f74bed6ae",
-                "6cc2d40b1cb04873"
-            ]
-        ]
-    },
-    {
-        "id": "f344b67f74bed6ae",
-        "type": "debug",
-        "z": "c7cedd8aab9f4410",
-        "name": "Direccion IP",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 710,
-        "y": 100,
-        "wires": []
-    },
-    {
-        "id": "6cc2d40b1cb04873",
-        "type": "ui_text",
-        "z": "c7cedd8aab9f4410",
-        "group": "88d8e41ba2c8c8ee",
-        "order": 8,
-        "width": 0,
-        "height": 0,
-        "name": "",
-        "label": "Direccion:",
-        "format": "{{msg.IP}}",
-        "layout": "col-center",
-        "className": "",
-        "style": true,
-        "font": "Times New Roman,Times,serif",
-        "fontSize": "20",
-        "color": "#000000",
-        "x": 700,
-        "y": 140,
-        "wires": []
     },
     {
         "id": "34951872e55b96da",
@@ -497,121 +650,388 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
         ]
     },
     {
-        "id": "8c9304ad6255a3d7",
-        "type": "ui_spacer",
+        "id": "92367b57a910f760",
+        "type": "ui_text",
         "z": "c7cedd8aab9f4410",
-        "name": "spacer",
         "group": "54277383dc98cf81",
-        "order": 2,
-        "width": "0",
-        "height": "0"
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Ojos de Quetzal",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": true,
+        "font": "Times New Roman,Times,serif",
+        "fontSize": "30",
+        "color": "#000000",
+        "x": 260,
+        "y": 40,
+        "wires": []
     },
     {
-        "id": "408cb01191521a48",
-        "type": "ui_spacer",
+        "id": "3a0effab12b89b3a",
+        "type": "ui_text",
         "z": "c7cedd8aab9f4410",
-        "name": "spacer",
         "group": "68d6cdd4459096d8",
         "order": 1,
-        "width": "0",
-        "height": "0"
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Imagen",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": true,
+        "font": "Times New Roman,Times,serif",
+        "fontSize": "30",
+        "color": "#000000",
+        "x": 760,
+        "y": 280,
+        "wires": []
     },
     {
-        "id": "ba3fed4b4dff75e7",
-        "type": "ui_spacer",
+        "id": "ca08e730e0e62da0",
+        "type": "ui_text",
         "z": "c7cedd8aab9f4410",
-        "name": "spacer",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 18,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Valor de indice",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "style": true,
+        "font": "Times New Roman,Times,serif",
+        "fontSize": "25",
+        "color": "#000000",
+        "x": 520,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "6cc2d40b1cb04873",
+        "type": "ui_text",
+        "z": "c7cedd8aab9f4410",
         "group": "88d8e41ba2c8c8ee",
         "order": 1,
-        "width": 6,
-        "height": 1
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Direccion:",
+        "format": "{{msg.IP}}",
+        "layout": "col-center",
+        "className": "",
+        "style": true,
+        "font": "Times New Roman,Times,serif",
+        "fontSize": "20",
+        "color": "#000000",
+        "x": 760,
+        "y": 140,
+        "wires": []
     },
     {
-        "id": "1ab09b54ce563c9f",
-        "type": "ui_spacer",
+        "id": "9843740845807032",
+        "type": "base64",
         "z": "c7cedd8aab9f4410",
-        "name": "spacer",
+        "name": "",
+        "action": "",
+        "property": "payload",
+        "x": 380,
+        "y": 340,
+        "wires": [
+            [
+                "d5fa3da7e823f53c",
+                "db680f98e4dda2ed"
+            ]
+        ]
+    },
+    {
+        "id": "e301330c0c924aa9",
+        "type": "hostip",
+        "z": "c7cedd8aab9f4410",
+        "name": "Host IP",
+        "x": 440,
+        "y": 100,
+        "wires": [
+            [
+                "67a5bdfba18eab27"
+            ]
+        ]
+    },
+    {
+        "id": "16a113f27f418fcf",
+        "type": "ui_text",
+        "z": "c7cedd8aab9f4410",
         "group": "88d8e41ba2c8c8ee",
-        "order": 2,
-        "width": 6,
-        "height": 1
+        "order": 20,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Indice seleccionado",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "style": true,
+        "font": "Times New Roman,Times,serif",
+        "fontSize": "20",
+        "color": "#000000",
+        "x": 830,
+        "y": 620,
+        "wires": []
     },
     {
-        "id": "f28ea0cbe5a214f8",
-        "type": "ui_spacer",
+        "id": "0815d39b23e36efd",
+        "type": "mqtt in",
         "z": "c7cedd8aab9f4410",
-        "name": "spacer",
+        "name": "",
+        "topic": "indice",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "407a01e4.6b637",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 610,
+        "y": 620,
+        "wires": [
+            [
+                "16a113f27f418fcf"
+            ]
+        ]
+    },
+    {
+        "id": "23f75ca210a06eb9",
+        "type": "mqtt in",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "topic": "inter",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "407a01e4.6b637",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 610,
+        "y": 740,
+        "wires": [
+            [
+                "358f22c51f5b8679"
+            ]
+        ]
+    },
+    {
+        "id": "358f22c51f5b8679",
+        "type": "ui_text",
+        "z": "c7cedd8aab9f4410",
         "group": "88d8e41ba2c8c8ee",
         "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Estado ",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "style": true,
+        "font": "Times New Roman,Times,serif",
+        "fontSize": "25",
+        "color": "#000000",
+        "x": 800,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "618275829b21eaf6",
+        "type": "ui_text",
+        "z": "c7cedd8aab9f4410",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 5,
+        "width": 4,
+        "height": 1,
+        "name": "",
+        "label": "Sano",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "style": true,
+        "font": "Times New Roman,Times,serif",
+        "fontSize": "25",
+        "color": "#000000",
+        "x": 290,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "4e5622d6992cc2eb",
+        "type": "ui_text",
+        "z": "c7cedd8aab9f4410",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 8,
+        "width": 4,
+        "height": 1,
+        "name": "",
+        "label": "Medio sano",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "style": true,
+        "font": "Times New Roman,Times,serif",
+        "fontSize": "25",
+        "color": "#000000",
+        "x": 430,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "ef477c609c2149b8",
+        "type": "ui_text",
+        "z": "c7cedd8aab9f4410",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 11,
+        "width": 4,
+        "height": 1,
+        "name": "",
+        "label": "No sano",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "style": true,
+        "font": "Times New Roman,Times,serif",
+        "fontSize": "25",
+        "color": "#000000",
+        "x": 300,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "8a12e5e673140bf7",
+        "type": "ui_text",
+        "z": "c7cedd8aab9f4410",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 14,
+        "width": 4,
+        "height": 1,
+        "name": "",
+        "label": "Sin vida",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "style": true,
+        "font": "Times New Roman,Times,serif",
+        "fontSize": "25",
+        "color": "#000000",
+        "x": 460,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "8ab308c215970ba9",
+        "type": "ui_button",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 7,
         "width": 1,
-        "height": 1
+        "height": 1,
+        "passthru": false,
+        "label": "",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "Blue",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 650,
+        "y": 860,
+        "wires": [
+            []
+        ]
     },
     {
-        "id": "1fbff17129ac6d23",
-        "type": "ui_spacer",
+        "id": "aa09af22d92454d0",
+        "type": "ui_button",
         "z": "c7cedd8aab9f4410",
-        "name": "spacer",
+        "name": "",
         "group": "88d8e41ba2c8c8ee",
-        "order": 3,
+        "order": 13,
         "width": 1,
-        "height": 1
+        "height": 1,
+        "passthru": false,
+        "label": "",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "yellow",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 650,
+        "y": 900,
+        "wires": [
+            []
+        ]
     },
     {
-        "id": "407a01e4.6b637",
-        "type": "mqtt-broker",
-        "broker": "localhost",
-        "port": "1883",
-        "clientid": "",
-        "usetls": false,
-        "compatmode": true,
-        "keepalive": "60",
-        "cleansession": true,
-        "birthTopic": "",
-        "birthQos": "0",
-        "birthPayload": "",
-        "willTopic": "",
-        "willQos": "0",
-        "willPayload": ""
+        "id": "b8b8829812c3fc29",
+        "type": "ui_button",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 10,
+        "width": 1,
+        "height": 1,
+        "passthru": false,
+        "label": "",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "Green",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 770,
+        "y": 860,
+        "wires": [
+            []
+        ]
     },
     {
-        "id": "68d6cdd4459096d8",
-        "type": "ui_group",
-        "name": "Captación",
-        "tab": "649f19f5f793fe51",
-        "order": 2,
-        "disp": true,
-        "width": "10",
-        "collapse": false,
-        "className": ""
-    },
-    {
-        "id": "54277383dc98cf81",
-        "type": "ui_group",
-        "name": "Opciones",
-        "tab": "649f19f5f793fe51",
-        "order": 1,
-        "disp": true,
-        "width": "5",
-        "collapse": false,
-        "className": ""
-    },
-    {
-        "id": "88d8e41ba2c8c8ee",
-        "type": "ui_group",
-        "name": "Info.",
-        "tab": "649f19f5f793fe51",
-        "order": 3,
-        "disp": true,
-        "width": "6",
-        "collapse": false,
-        "className": ""
-    },
-    {
-        "id": "649f19f5f793fe51",
-        "type": "ui_tab",
-        "name": "Ojos De Quetzal",
-        "icon": "dashboard",
-        "disabled": false,
-        "hidden": false
+        "id": "4661e5f1a8cb0f04",
+        "type": "ui_button",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 16,
+        "width": 1,
+        "height": 1,
+        "passthru": false,
+        "label": "",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "RED",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 770,
+        "y": 900,
+        "wires": [
+            []
+        ]
     }
 ]
