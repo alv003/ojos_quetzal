@@ -22,43 +22,12 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 290,
-        "y": 240,
+        "x": 230,
+        "y": 340,
         "wires": [
             [
                 "9843740845807032"
             ]
-        ]
-    },
-    {
-        "id": "9843740845807032",
-        "type": "base64",
-        "z": "c7cedd8aab9f4410",
-        "name": "",
-        "action": "",
-        "property": "payload",
-        "x": 480,
-        "y": 240,
-        "wires": [
-            [
-                "d5fa3da7e823f53c",
-                "db680f98e4dda2ed"
-            ]
-        ]
-    },
-    {
-        "id": "d5fa3da7e823f53c",
-        "type": "image viewer",
-        "z": "c7cedd8aab9f4410",
-        "name": "",
-        "width": 160,
-        "data": "payload",
-        "dataType": "msg",
-        "active": true,
-        "x": 870,
-        "y": 240,
-        "wires": [
-            []
         ]
     },
     {
@@ -80,53 +49,13 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
         "from": "",
         "to": "",
         "reg": false,
-        "x": 710,
-        "y": 180,
+        "x": 590,
+        "y": 340,
         "wires": [
             [
                 "3b3e5af7c94a511e"
             ]
         ]
-    },
-    {
-        "id": "3b3e5af7c94a511e",
-        "type": "ui_media",
-        "z": "c7cedd8aab9f4410",
-        "group": "68d6cdd4459096d8",
-        "name": "",
-        "width": 0,
-        "height": 0,
-        "order": 3,
-        "category": "",
-        "file": "",
-        "layout": "adjust",
-        "showcontrols": true,
-        "loop": true,
-        "onstart": false,
-        "scope": "local",
-        "tooltip": "",
-        "x": 910,
-        "y": 180,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "92367b57a910f760",
-        "type": "ui_text",
-        "z": "c7cedd8aab9f4410",
-        "group": "54277383dc98cf81",
-        "order": 1,
-        "width": 0,
-        "height": 0,
-        "name": "",
-        "label": "Ojos de Quetzal",
-        "format": "{{msg.payload}}",
-        "layout": "row-spread",
-        "className": "",
-        "x": 380,
-        "y": 140,
-        "wires": []
     },
     {
         "id": "064e9420fd559978",
@@ -142,9 +71,69 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
         "correl": "",
         "expiry": "",
         "broker": "407a01e4.6b637",
-        "x": 550,
-        "y": 400,
+        "x": 450,
+        "y": 600,
         "wires": []
+    },
+    {
+        "id": "707ad005ef0c59bf",
+        "type": "mqtt in",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "topic": "NDVI",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "407a01e4.6b637",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 230,
+        "y": 200,
+        "wires": [
+            [
+                "ca08e730e0e62da0",
+                "b1caf0a9c014f140"
+            ]
+        ]
+    },
+    {
+        "id": "d5fa3da7e823f53c",
+        "type": "image viewer",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "width": 160,
+        "data": "payload",
+        "dataType": "msg",
+        "active": true,
+        "x": 570,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3b3e5af7c94a511e",
+        "type": "ui_media",
+        "z": "c7cedd8aab9f4410",
+        "group": "68d6cdd4459096d8",
+        "name": "",
+        "width": 0,
+        "height": 0,
+        "order": 3,
+        "category": "",
+        "file": "",
+        "layout": "center",
+        "showcontrols": true,
+        "loop": true,
+        "onstart": false,
+        "scope": "local",
+        "tooltip": "",
+        "x": 750,
+        "y": 340,
+        "wires": [
+            []
+        ]
     },
     {
         "id": "22117b5c5989bfc9",
@@ -156,7 +145,7 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
         "width": 0,
         "height": 0,
         "passthru": false,
-        "label": "NIR",
+        "label": "NDVI",
         "tooltip": "",
         "color": "",
         "bgcolor": "",
@@ -166,8 +155,8 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
         "payloadType": "str",
         "topic": "topic",
         "topicType": "msg",
-        "x": 290,
-        "y": 340,
+        "x": 250,
+        "y": 560,
         "wires": [
             [
                 "064e9420fd559978"
@@ -184,7 +173,7 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
         "width": 0,
         "height": 0,
         "passthru": false,
-        "label": "RED",
+        "label": "NDRE",
         "tooltip": "",
         "color": "",
         "bgcolor": "",
@@ -194,64 +183,8 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
         "payloadType": "str",
         "topic": "topic",
         "topicType": "msg",
-        "x": 290,
-        "y": 380,
-        "wires": [
-            [
-                "064e9420fd559978"
-            ]
-        ]
-    },
-    {
-        "id": "259243319f5c67ff",
-        "type": "ui_button",
-        "z": "c7cedd8aab9f4410",
-        "name": "",
-        "group": "54277383dc98cf81",
-        "order": 6,
-        "width": 0,
-        "height": 0,
-        "passthru": false,
-        "label": "GREEN",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "",
-        "className": "",
-        "icon": "",
-        "payload": "4",
-        "payloadType": "str",
-        "topic": "topic",
-        "topicType": "msg",
-        "x": 300,
-        "y": 460,
-        "wires": [
-            [
-                "064e9420fd559978"
-            ]
-        ]
-    },
-    {
-        "id": "ee026cb245d7d988",
-        "type": "ui_button",
-        "z": "c7cedd8aab9f4410",
-        "name": "",
-        "group": "54277383dc98cf81",
-        "order": 7,
-        "width": 0,
-        "height": 0,
-        "passthru": false,
-        "label": "RED-EDGE",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "",
-        "className": "",
-        "icon": "",
-        "payload": "5",
-        "payloadType": "str",
-        "topic": "topic",
-        "topicType": "msg",
-        "x": 310,
-        "y": 500,
+        "x": 250,
+        "y": 600,
         "wires": [
             [
                 "064e9420fd559978"
@@ -274,12 +207,12 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
         "bgcolor": "",
         "className": "",
         "icon": "",
-        "payload": "6",
+        "payload": "4",
         "payloadType": "str",
         "topic": "topic",
         "topicType": "msg",
-        "x": 290,
-        "y": 300,
+        "x": 250,
+        "y": 520,
         "wires": [
             [
                 "064e9420fd559978"
@@ -296,7 +229,7 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
         "width": 0,
         "height": 0,
         "passthru": false,
-        "label": "NDVI",
+        "label": "MSAVI2",
         "tooltip": "",
         "color": "",
         "bgcolor": "",
@@ -306,13 +239,34 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
         "payloadType": "str",
         "topic": "topic",
         "topicType": "msg",
-        "x": 290,
-        "y": 420,
+        "x": 260,
+        "y": 640,
         "wires": [
             [
                 "064e9420fd559978"
             ]
         ]
+    },
+    {
+        "id": "92367b57a910f760",
+        "type": "ui_text",
+        "z": "c7cedd8aab9f4410",
+        "group": "54277383dc98cf81",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Ojos de Quetzal",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": true,
+        "font": "Times New Roman,Times,serif",
+        "fontSize": "30",
+        "color": "#000000",
+        "x": 260,
+        "y": 40,
+        "wires": []
     },
     {
         "id": "3a0effab12b89b3a",
@@ -327,30 +281,13 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
         "format": "{{msg.payload}}",
         "layout": "row-spread",
         "className": "",
-        "x": 840,
-        "y": 140,
+        "style": true,
+        "font": "Times New Roman,Times,serif",
+        "fontSize": "30",
+        "color": "#000000",
+        "x": 760,
+        "y": 300,
         "wires": []
-    },
-    {
-        "id": "707ad005ef0c59bf",
-        "type": "mqtt in",
-        "z": "c7cedd8aab9f4410",
-        "name": "",
-        "topic": "NDVI",
-        "qos": "2",
-        "datatype": "auto-detect",
-        "broker": "407a01e4.6b637",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 690,
-        "y": 440,
-        "wires": [
-            [
-                "ca08e730e0e62da0"
-            ]
-        ]
     },
     {
         "id": "ca08e730e0e62da0",
@@ -361,13 +298,203 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
         "width": 0,
         "height": 0,
         "name": "",
-        "label": "Índice NDVI",
+        "label": "Índice seleccionado",
         "format": "{{msg.payload}}",
         "layout": "col-center",
         "className": "",
-        "x": 930,
-        "y": 440,
+        "style": true,
+        "font": "Times New Roman,Times,serif",
+        "fontSize": "25",
+        "color": "#000000",
+        "x": 430,
+        "y": 240,
         "wires": []
+    },
+    {
+        "id": "9843740845807032",
+        "type": "base64",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "action": "",
+        "property": "payload",
+        "x": 380,
+        "y": 340,
+        "wires": [
+            [
+                "d5fa3da7e823f53c",
+                "db680f98e4dda2ed"
+            ]
+        ]
+    },
+    {
+        "id": "b1caf0a9c014f140",
+        "type": "debug",
+        "z": "c7cedd8aab9f4410",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "7a9743f15c088015",
+        "type": "inject",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 250,
+        "y": 100,
+        "wires": [
+            [
+                "e301330c0c924aa9"
+            ]
+        ]
+    },
+    {
+        "id": "e301330c0c924aa9",
+        "type": "hostip",
+        "z": "c7cedd8aab9f4410",
+        "name": "Host IP",
+        "x": 400,
+        "y": 100,
+        "wires": [
+            [
+                "67a5bdfba18eab27"
+            ]
+        ]
+    },
+    {
+        "id": "67a5bdfba18eab27",
+        "type": "function",
+        "z": "c7cedd8aab9f4410",
+        "name": "function 1",
+        "func": "msg.IP=msg.payload[0].address+\":1880/ui\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 100,
+        "wires": [
+            [
+                "f344b67f74bed6ae",
+                "6cc2d40b1cb04873"
+            ]
+        ]
+    },
+    {
+        "id": "f344b67f74bed6ae",
+        "type": "debug",
+        "z": "c7cedd8aab9f4410",
+        "name": "Direccion IP",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 710,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "6cc2d40b1cb04873",
+        "type": "ui_text",
+        "z": "c7cedd8aab9f4410",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Direccion:",
+        "format": "{{msg.IP}}",
+        "layout": "col-center",
+        "className": "",
+        "style": true,
+        "font": "Times New Roman,Times,serif",
+        "fontSize": "20",
+        "color": "#000000",
+        "x": 700,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "34951872e55b96da",
+        "type": "ui_button",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "group": "54277383dc98cf81",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Start",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "blue",
+        "className": "",
+        "icon": "",
+        "payload": "9",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 250,
+        "y": 760,
+        "wires": [
+            [
+                "064e9420fd559978"
+            ]
+        ]
+    },
+    {
+        "id": "c01eddc5fc898c2c",
+        "type": "ui_button",
+        "z": "c7cedd8aab9f4410",
+        "name": "",
+        "group": "54277383dc98cf81",
+        "order": 9,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Stop",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "RED",
+        "className": "",
+        "icon": "",
+        "payload": "8",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 250,
+        "y": 720,
+        "wires": [
+            [
+                "064e9420fd559978"
+            ]
+        ]
     },
     {
         "id": "8c9304ad6255a3d7",
@@ -376,8 +503,8 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
         "name": "spacer",
         "group": "54277383dc98cf81",
         "order": 2,
-        "width": 6,
-        "height": 1
+        "width": "0",
+        "height": "0"
     },
     {
         "id": "408cb01191521a48",
@@ -386,8 +513,8 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
         "name": "spacer",
         "group": "68d6cdd4459096d8",
         "order": 1,
-        "width": 10,
-        "height": 1
+        "width": "0",
+        "height": "0"
     },
     {
         "id": "ba3fed4b4dff75e7",
@@ -410,6 +537,26 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
         "height": 1
     },
     {
+        "id": "f28ea0cbe5a214f8",
+        "type": "ui_spacer",
+        "z": "c7cedd8aab9f4410",
+        "name": "spacer",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 3,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "1fbff17129ac6d23",
+        "type": "ui_spacer",
+        "z": "c7cedd8aab9f4410",
+        "name": "spacer",
+        "group": "88d8e41ba2c8c8ee",
+        "order": 3,
+        "width": 1,
+        "height": 1
+    },
+    {
         "id": "407a01e4.6b637",
         "type": "mqtt-broker",
         "broker": "localhost",
@@ -429,29 +576,35 @@ $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/ma
     {
         "id": "68d6cdd4459096d8",
         "type": "ui_group",
-        "name": "Group 2",
+        "name": "Captación",
         "tab": "649f19f5f793fe51",
         "order": 2,
         "disp": true,
-        "width": 10
+        "width": "10",
+        "collapse": false,
+        "className": ""
     },
     {
         "id": "54277383dc98cf81",
         "type": "ui_group",
-        "name": "Group 1",
+        "name": "Opciones",
         "tab": "649f19f5f793fe51",
         "order": 1,
         "disp": true,
-        "width": 6
+        "width": "5",
+        "collapse": false,
+        "className": ""
     },
     {
         "id": "88d8e41ba2c8c8ee",
         "type": "ui_group",
-        "name": "Group 3",
+        "name": "Info.",
         "tab": "649f19f5f793fe51",
         "order": 3,
         "disp": true,
-        "width": 6
+        "width": "6",
+        "collapse": false,
+        "className": ""
     },
     {
         "id": "649f19f5f793fe51",
