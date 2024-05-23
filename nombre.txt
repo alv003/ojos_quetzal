@@ -1,3 +1,7 @@
+<(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/master/deb/update-nodejs-and-nodered)
+
+
+
 #Funcion para tomar 1 fotografia usando la clase NDVICalculator y guardar la imagen
 counter = 0
 def take_photo():
