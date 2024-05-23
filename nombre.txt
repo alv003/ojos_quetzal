@@ -48,26 +48,21 @@ def take_photo():
     cv2.imwrite(filename, mandarfotos)
     counter += 1
 
-def send_IMG(img):
-    buf = io.BytesIO()
-    plt.imsave(buf, img, format='png')  
-    image_data = buf.getvalue()
-    encoded_image = base64.b64encode(image_data).decode('utf-8')
-    client.publish("Imagen", encoded_image)
-*   
-
 Traceback (most recent call last):
-  File "/home/kouriakova/Desktop/Newservos.py", line 10, in <module>
-    pwm = Adafruit_PCA9685.PCA9685(address=0x40, busnum=1)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/kouriakova/OjosdeQuetzal/venv/lib/python3.11/site-packages/Adafruit_PCA9685/PCA9685.py", line 75, in __init__
-    self.set_all_pwm(0, 0)
-  File "/home/kouriakova/OjosdeQuetzal/venv/lib/python3.11/site-packages/Adafruit_PCA9685/PCA9685.py", line 111, in set_all_pwm
-    self._device.write8(ALL_LED_ON_L, on & 0xFF)
-  File "/home/kouriakova/OjosdeQuetzal/venv/lib/python3.11/site-packages/Adafruit_GPIO/I2C.py", line 114, in write8
-    self._bus.write_byte_data(self._address, register, value)
-  File "/home/kouriakova/OjosdeQuetzal/venv/lib/python3.11/site-packages/Adafruit_PureIO/smbus.py", line 316, in write_byte_data
-    self._device.write(data)
-TimeoutError: [Errno 110] Connection timed out
+  File "/home/kou/Desktop/Final.py", line 410, in <module>
+    send_IMG(merged_fix_stb)
+  File "/home/kou/Desktop/Final.py", line 113, in send_IMG
+    plt.imsave(buf, img, format='png') 
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/matplotlib/pyplot.py", line 2136, in imsave
+    return matplotlib.image.imsave(fname, arr, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/matplotlib/image.py", line 1630, in imsave
+    rgba = sm.to_rgba(arr, bytes=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/matplotlib/cm.py", line 490, in to_rgba
+    raise ValueError("Third dimension must be 3 or 4")
+ValueError: Third dimension must be 3 or 4
+*   
 
 
