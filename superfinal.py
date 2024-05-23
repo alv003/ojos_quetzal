@@ -11,6 +11,7 @@ import io
 import base64
 import time
 import Adafruit_PCA9685
+import random
 
 
 #Matriz del alineacion de la imagen
@@ -50,9 +51,14 @@ servo_max = 610  # Max pulse length out of 4096
 pwm.set_pwm_freq(60)
 
 
+#define image size
+width = 700
+height = 500
+
+
 #Iniciar camaras
-cam0=Picamera2(0)
-cam1=Picamera2(1)
+cam0=Picamera2(0)#cam derecha 
+cam1=Picamera2(1)#cam izquierda
 
 #set camaras
 cam0.preview_configuration.main.size = (700,500)
@@ -103,12 +109,13 @@ client.subscribe("data")                #Tópico que se suscribe
 #-----------------------------------------------------------------------------------------------------------------------------------
 #[Conversor de Imagen]  
 def send_IMG(img):
+
     buf = io.BytesIO()
-    plt.imsave(buf, img, format='png')  
+    plt.imsave(buf, img) #, format='png'
+    buf.seek(0)
     image_data = buf.getvalue()
     encoded_image = base64.b64encode(image_data).decode('utf-8')
     client.publish("Imagen", encoded_image)
-    #client.loop_stop()    
 
 #--------------------------------------------------------------------------------------------------------------------
 #[Comandos de imagen]
@@ -146,7 +153,9 @@ def comands(number):
                 opcion=4
 
 
-#Comando para tomar fot0?                
+#Comando para tomar fotos               
+            elif(i == 7):#RGB
+                opcion=7
 
 
 #Comandos de encendido y apagado
@@ -316,6 +325,18 @@ def posicion(grados1, grados2, servo):
 #posicion(rEDGE, lGREEN, 2)
 
 
+#-----------------------------------------------------------------------------------------------------------------------------------
+#Funcion para posicionar servo
+
+def foto(): 
+    r = random.randint(0,999)
+
+    cam0.start_and_capture_files("test"+str(r)+".jpg",initial_delay=0.1, delay=0.1, num_files=1)#cam derecha 
+    cam1.start_and_capture_files("test1"+str(r)+".jpg",initial_delay=0.1, delay=0.1, num_files=1)#cam izquierda 
+    cam0.close()
+    cam1.close()
+    cam0.start()
+    cam1.start()
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 #MAIN
@@ -339,42 +360,36 @@ while True:
     frame0 = cam0.capture_array()
     frame1 = cam1.capture_array()
 
-    pframe0 = cv2.cvtColor(frame0,cv2.COLOR_BGR2GRAY)
-    pframe1 = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
+    pframe0 = cv2.cvtColor(frame0,cv2.COLOR_BGR2RGB)
+    pframe0 = cv2.cvtColor(pframe0,cv2.COLOR_RGB2BGR)
 
+    pframe1 = cv2.cvtColor(frame1,cv2.COLOR_BGR2RGB)
+    pframe1 = cv2.cvtColor(pframe1,cv2.COLOR_RGB2BGR)
+   
     #try:
     correccion_img = Correccion()
     calculator = ICalculator()
-
-    #define image size
-    width = 700
-    height = 500
 
     # Reading images
     Img_RED = pframe0
     Img_NIR = pframe1
 
     # Create a BGR image with the red and nir
-    merged_fix_bad = cv2.merge((Img_RED,Img_RED,Img_NIR)) # First image, misaligned
-    merged_fix_bad = cv2.resize(merged_fix_bad, (700, 500), interpolation=cv2.INTER_LINEAR)
+    #merged_fix_bad = cv2.merge((Img_RED,Img_RED,Img_NIR)) # First image, misaligned
+    #merged_fix_bad = cv2.resize(merged_fix_bad, (width, height), interpolation=cv2.INTER_LINEAR)
     # Assuming merged_fix_bad is supposed to be an RGB image
+    #merged_fix_stb = cv2.merge((stb_RED,stb_RED, stb_NIR))
+    #merged_fix_stb = merged_fix_stb[50:500, 0:650]
 
     stb_NIR, stb_RED =  correccion_img.img_alignment_sequoia(Img_NIR, Img_RED, width, height)
-    merged_fix_stb = cv2.merge((stb_RED,stb_RED, stb_NIR))
-     
-
-    
+        
     #Seleccion de imagen
     if (IO==True) & (opcion==1): #NDVI
         ndvi_image, Valor = calculator.ndvi_calculation(stb_RED,stb_NIR)
         client.publish("NDVI", Valor)
         interpretacion(Valor)
-        #rotate ndvi_image
-        #ndvi_image = np.flipud(ndvi_image)
-        "Se pinta la imagen con colormap de OpenCV. En mi caso, RAINBOW fue la mejor opción"
+        "Se pinta la imagen con colormap de OpenCV."
         im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_JET)
-        #im_color = cv2.flip(im_color, 1)
-        #stb_RED = stb_RED[50:500, 0:650]  
         im_color = im_color[50:500, 0:650]
         send_IMG(im_color)
 
@@ -395,10 +410,15 @@ while True:
         send_IMG(im_color)
 
     elif(IO==True) & (opcion==4): #RGB
-        merged_fix_stb = merged_fix_stb[50:500, 0:650]
-        send_IMG(merged_fix_stb)
+        send_IMG(frame0)
         interpretacion(-2)
         client.publish("NDVI", "0")
+
+    elif(IO==False) & (opcion==7): #RGB
+        client.publish("inter", "Tomando fotos")
+        foto()
+        interpretacion(-2)
+        client.publish("inter", "tomadas")
 
     
     
