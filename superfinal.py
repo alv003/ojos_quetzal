@@ -6,14 +6,11 @@ import sys
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from picamera2 import Picamera2, Preview
-import time
 import paho.mqtt.client as mqtt  
 import io
 import base64
 import time
 import Adafruit_PCA9685
-import math
-
 
 
 #Matriz del alineacion de la imagen
@@ -26,16 +23,16 @@ opcion=0 #opcion de mostrar imagen
 
 #Grados de Filtros IR
 in1= 110 
-in2= 110 
+in2= 100 
 
-out1=161
-out2=161
+out1=153
+out2=153
 
 #Grados pasa bandas
-rRED= 97  
-rEDGE= 57 
+rRED= 57  
+rEDGE= 97 
 
-lNIR=95   
+lNIR=89   
 lGREEN=55 
 
 lout=135
@@ -116,16 +113,8 @@ def send_IMG(img):
 #--------------------------------------------------------------------------------------------------------------------
 #[Comandos de imagen]
 def comands(number):
-    global stb_NIR
-    global stb_RED
-    global im_color
-    global IO 
     global opcion
-
-    NIR = stb_NIR
-    RED = stb_RED
-    NDVI = im_color
-
+    global IO
 
     for i in range (10):  #rango de 0-9
         if(i == int(number)):
@@ -135,26 +124,29 @@ def comands(number):
             if(i == 1):#NDVI
                 posicion(in1,in2, 1)    #IR OUT
                 posicion(rRED, lNIR, 2) #RED & NIR
+                client.publish("indice", "NDVI")
                 opcion=1
 
             elif(i == 2):#NDRE
                 posicion(in1,in2, 1)    #IR OUT
                 posicion(rEDGE, lNIR, 2) #REDGE & NIR
+                client.publish("indice", "NDRE")
                 opcion=2
 
             elif(i == 3):#MSAVI2   
                 posicion(in1,in2, 1)    #IR OUT
                 posicion(rRED, lNIR, 2) #RED & NIR
+                client.publish("indice", "MSAVI2")
                 opcion=3
 
             elif(i == 4):#RGB
                 posicion(out1, out2, 1) #IR IN
                 posicion(rout, lout, 2) #Passband out
+                client.publish("indice", "RGB")
                 opcion=4
 
 
 #Comando para tomar fot0?                
-
 
 
 #Comandos de encendido y apagado
@@ -181,7 +173,9 @@ class ICalculator:
         nir = np.array(img_NIR, dtype=float)
 
         check = np.logical_and(red > 1, nir > 1)
-        ndvi = np.where(check, (nir - red) / (nir + red), 0) 
+        suma= np.where(((nir+red)==0),0.01,(nir+red))
+
+        ndvi = np.where(check, (nir - red) / suma, 0) 
         
         matrix = ndvi
         ro=matrix.max()-matrix.min()
@@ -213,7 +207,8 @@ class ICalculator:
         nir = np.array(img_NIR, dtype=float)
 
         check = np.logical_and(red > 1, nir > 1)
-        msavi2 = np.where(check, (2*nir+1-math.sqrt(pow((2*nir+1), 2))-8*(nir-red))/2, 0) 
+
+        msavi2 = np.where(check, (2*nir+1-np.sqrt(np.power((2*nir+1), 2))-8*(nir-red))/2, 0) 
         
         matrix = msavi2
         ro=matrix.max()-matrix.min()
@@ -223,7 +218,7 @@ class ICalculator:
         
         vd=((Valor-matrix.min())*rd/ro)-1
         vd=round(vd,2)
-
+        vd=vd*-1
         #print(vd) #validar    
 
         if msavi2.min() < 0:
@@ -232,6 +227,8 @@ class ICalculator:
         msavi2 = (msavi2 * 255) / msavi2.max()
         msavi2 = msavi2.round()
         msavi2_image = np.array(msavi2, dtype=np.uint8)
+
+        client.publish("indice", "msavi2")
 
         return msavi2_image, vd
 #-----------------------------------------------------------------------------------------------------------------------------------
@@ -256,6 +253,29 @@ def maping(x):
    mapped_value = map_range(y, 0, 180, servo_min, servo_max)
    new = int(mapped_value)
    return new
+
+#-----------------------------------------------------------------------------------------------------------------------------------
+#Interpretacion
+
+def interpretacion(x):
+
+    if (x <= 0 and x>-1):
+       inter = "Inanimado" 
+    
+    elif (x > 0 and x <= 0.33):
+         inter = "planta enferma"
+
+    elif (x > 0.33 and x <= 0.66):
+         inter = "planta medianamente sana"
+
+    elif (x > 0.66):
+         inter = "planta sana"
+
+    else:
+        inter="Nulo"
+    
+    client.publish('inter',inter)
+
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 #Funcion para posicionar servo
@@ -309,7 +329,9 @@ pwm.set_pwm(5, ch57Deg, 0)
 pwm.set_pwm(7, ch57Deg, 0)
 time.sleep(0.2)
 
+
 posicion(in1,in2, 1)#
+posicion(rout, lout, 2)
 
 
 while True:
@@ -346,10 +368,11 @@ while True:
     if (IO==True) & (opcion==1): #NDVI
         ndvi_image, Valor = calculator.ndvi_calculation(stb_RED,stb_NIR)
         client.publish("NDVI", Valor)
+        interpretacion(Valor)
         #rotate ndvi_image
         #ndvi_image = np.flipud(ndvi_image)
         "Se pinta la imagen con colormap de OpenCV. En mi caso, RAINBOW fue la mejor opción"
-        im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_RAINBOW)
+        im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_JET)
         #im_color = cv2.flip(im_color, 1)
         #stb_RED = stb_RED[50:500, 0:650]  
         im_color = im_color[50:500, 0:650]
@@ -358,20 +381,24 @@ while True:
     elif(IO==True) & (opcion==2): #NDRE
         ndvi_image, Valor = calculator.ndvi_calculation(stb_RED,stb_NIR)
         client.publish("NDVI", Valor)
-        im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_RAINBOW)  
+        interpretacion(Valor)
+        im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_JET)  
         im_color = im_color[50:500, 0:650]
         send_IMG(im_color)
     
     elif(IO==True) & (opcion==3): #MSAVI2 
         ndvi_image, Valor = calculator.msavi2_calculation(stb_RED,stb_NIR)
         client.publish("NDVI", Valor)
-        im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_RAINBOW)  
+        interpretacion(Valor)
+        im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_JET)  
         im_color = im_color[50:500, 0:650]
         send_IMG(im_color)
 
     elif(IO==True) & (opcion==4): #RGB
-        #merged_fix_stb = merged_fix_stb[50:500, 0:650] si no es necesario, borrar
+        merged_fix_stb = merged_fix_stb[50:500, 0:650]
         send_IMG(merged_fix_stb)
+        interpretacion(-2)
+        client.publish("NDVI", "0")
 
     
     
