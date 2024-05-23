@@ -12,9 +12,11 @@ import io
 import base64
 import time
 import Adafruit_PCA9685
+import math
 
 
 
+#Matriz del alineacion de la imagen
 #c= np.array([[ 1.00715201e+00, -2.32810839e-02, -3.88794829e+01], [7.54220558e-03,  9.75861385e-01,  2.86827547e+01], [3.51586112e-05, -7.40422299e-05,  1.00000000e+00]])
 c=np.array([[ 9.94024085e-01, -2.97656751e-02, -3.60910470e+01], [-9.76327155e-03,  9.67355238e-01,  3.71420592e+01], [ 1.60864403e-05, -9.07830029e-05,  1.00000000e+00]] ) 
 
@@ -51,6 +53,7 @@ servo_max = 610  # Max pulse length out of 4096
 pwm.set_pwm_freq(60)
 
 
+#Iniciar camaras
 cam0=Picamera2(0)
 cam1=Picamera2(1)
 
@@ -66,10 +69,11 @@ cam1.configure("preview")
 cam0.start()
 cam1.start()
 
-# Create Sift object :3
+# Create Sift object 
 sift = cv2.SIFT_create()
 
-# radio, es el tamaño de la lente en centimetros
+#-----------------------------------------------------------------------------------------------------------------------------------
+#Alineacion de imagen
 class Correccion: 
             
     def img_alignment_sequoia(self, img_base_NIR, img_RED, width, height):    
@@ -83,8 +87,7 @@ class Correccion:
             
             return base_NIR, stb_RED
 
-
-#--------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------
 #[Configuracion de lectura]
 def on_message(client, userdata, message):
     mes = str(message.payload.decode("utf-8"))
@@ -108,58 +111,67 @@ def send_IMG(img):
     image_data = buf.getvalue()
     encoded_image = base64.b64encode(image_data).decode('utf-8')
     client.publish("Imagen", encoded_image)
+    #client.loop_stop()    
+
 #--------------------------------------------------------------------------------------------------------------------
 #[Comandos de imagen]
 def comands(number):
-    global im_color 
-    global IO
-    NIR = cv2.imread(r"/home/kouriakova/Ojos de Quetzal/ojos_quetzal/IMG_700101_001240_0000_NIR.TIF", 0)
-    RED = cv2.imread(r"/home/kouriakova/Ojos de Quetzal/ojos_quetzal/IMG_700101_001240_0000_RED.TIF", 0)
+    global stb_NIR
+    global stb_RED
+    global im_color
+    global IO 
+    global opcion
+
+    NIR = stb_NIR
+    RED = stb_RED
     NDVI = im_color
-    """
-    RGB = cv2.imread(url_img_RED, 0)
-    RE = cv2.imread(url_img_RED, 0)
-    GREEN = cv2.imread(url_img_RED, 0)
-    """
-    for i in range (6):
+
+
+    for i in range (10):  #rango de 0-9
         if(i == int(number)):
-            if(i == 1):
-                #NIR
-                send_IMG(NIR)
-            elif(i == 2):
-                send_IMG(RED)
-            elif(i == 3):
-                send_IMG(NDVI)
+
+#Comando para posicionar servos
+
+            if(i == 1):#NDVI
+                posicion(in1,in2, 1)    #IR OUT
+                posicion(rRED, lNIR, 2) #RED & NIR
+                opcion=1
+
+            elif(i == 2):#NDRE
+                posicion(in1,in2, 1)    #IR OUT
+                posicion(rEDGE, lNIR, 2) #REDGE & NIR
+                opcion=2
+
+            elif(i == 3):#MSAVI2   
+                posicion(in1,in2, 1)    #IR OUT
+                posicion(rRED, lNIR, 2) #RED & NIR
                 opcion=3
 
-            elif(i == 4):
-                send_IMG(NIR)#GREEN
+            elif(i == 4):#RGB
+                posicion(out1, out2, 1) #IR IN
+                posicion(rout, lout, 2) #Passband out
                 opcion=4
-                
-            elif(i == 5):
-                send_IMG(RED)#EDGE
-                opcion=5
 
-            elif(i == 6):
-                send_IMG(NIR)#RGB ##corregir
-                opcion=6
+
+#Comando para tomar fot0?                
+
+
 
 #Comandos de encendido y apagado
             elif(i == 8):
                 IO=False
                 opcion=8
                 
-                
-"""
-            elif(i == 4):
-                send_IMG(NIR)
-            elif(i == 5):
-                send_IMG(NIR)
-            elif(i == 6):
-                send_IMG(NIR)"""
+            elif(i == 9):
+                IO=True
+                opcion=9
+            
+
+
 #-----------------------------------------------------------------------------------------------------------------------------------
-#[Clase para calcular el índice NDVI]
-class NDVICalculator:
+#[Clase para calcular los índices]
+class ICalculator:
+    #NDVI & NDRE CALCULATOR
     def ndvi_calculation(self, img_RED, img_NIR, width=700, height=500):
 
         img_RED = cv2.resize(img_RED, (width, height), interpolation=cv2.INTER_LINEAR)
@@ -169,22 +181,59 @@ class NDVICalculator:
         nir = np.array(img_NIR, dtype=float)
 
         check = np.logical_and(red > 1, nir > 1)
-        suma = np.where(((nir + red) == 0), 0.01, (nir + red))
-        ndvi = np.where(check, (nir - red) / suma, 0)
+        ndvi = np.where(check, (nir - red) / (nir + red), 0) 
         
         matrix = ndvi
-        Valor = np.nanmean(matrix, where=matrix > 0)
+        ro=matrix.max()-matrix.min()
+        rd=2
+        
+        Valor = round(np.mean(matrix),3)
+        
+        vd=((Valor-matrix.min())*rd/ro)-1
+        vd=round(vd,2)
+
+        #print(vd) #validar    
 
         if ndvi.min() < 0:
             ndvi = ndvi + (ndvi.min() * -1)
 
         ndvi = (ndvi * 255) / ndvi.max()
         ndvi = ndvi.round()
-
         ndvi_image = np.array(ndvi, dtype=np.uint8)
 
-        return ndvi_image, Valor
+        return ndvi_image, vd
 
+    #NMSAVI2 CALCULATOR
+    def msavi2_calculation(self, img_RED, img_NIR, width=700, height=500):
+
+        img_RED = cv2.resize(img_RED, (width, height), interpolation=cv2.INTER_LINEAR)
+        img_NIR = cv2.resize(img_NIR, (width, height), interpolation=cv2.INTER_LINEAR)
+
+        red = np.array(img_RED, dtype=float)
+        nir = np.array(img_NIR, dtype=float)
+
+        check = np.logical_and(red > 1, nir > 1)
+        msavi2 = np.where(check, (2*nir+1-math.sqrt(pow((2*nir+1), 2))-8*(nir-red))/2, 0) 
+        
+        matrix = msavi2
+        ro=matrix.max()-matrix.min()
+        rd=2
+        
+        Valor = round(np.mean(matrix),3)
+        
+        vd=((Valor-matrix.min())*rd/ro)-1
+        vd=round(vd,2)
+
+        #print(vd) #validar    
+
+        if msavi2.min() < 0:
+            msavi2 = msavi2 + (msavi2.min() * -1)
+
+        msavi2 = (msavi2 * 255) / msavi2.max()
+        msavi2 = msavi2.round()
+        msavi2_image = np.array(msavi2, dtype=np.uint8)
+
+        return msavi2_image, vd
 #-----------------------------------------------------------------------------------------------------------------------------------
 #Revisa y linealiza valores
 
@@ -230,6 +279,23 @@ def posicion(grados1, grados2, servo):
         pwm.set_pwm(n1, ch1Deg, 0)
         pwm.set_pwm(n2, ch2Deg, 0)
         time.sleep(0.6)
+    
+#IR CUTOUT
+#posicion(in1,in2, 1)
+
+#IR CUTIN 
+#posicion(out1, out2, 1)
+
+#Passband out
+#posicion(rout, lout, 2)
+
+#RED & NIR
+#posicion(rRED, lNIR, 2)
+
+#RED EDGE & GREEN
+#posicion(rEDGE, lGREEN, 2)
+
+
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 #MAIN
@@ -256,7 +322,7 @@ while True:
 
     #try:
     correccion_img = Correccion()
-    calculator = NDVICalculator()
+    calculator = ICalculator()
 
     #define image size
     width = 700
@@ -273,34 +339,39 @@ while True:
 
     stb_NIR, stb_RED =  correccion_img.img_alignment_sequoia(Img_NIR, Img_RED, width, height)
     merged_fix_stb = cv2.merge((stb_RED,stb_RED, stb_NIR))
-    ndvi_image, Valor = calculator.ndvi_calculation(stb_RED,stb_NIR)
-    client.publish("NDVI", Valor)
-    #rotate ndvi_image
-    ndvi_image = np.flipud(ndvi_image)
-    "Se pinta la imagen con colormap de OpenCV. En mi caso, RAINBOW fue la mejor opción"
-    im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_RAINBOW)
-    #im_color = cv2.flip(im_color, 1)
+     
 
-    stb_RED = stb_RED[50:500, 0:650] 
-    im_color = im_color[50:500, 0:650] 
-
-    if (IO==True)&(opcion==3): #NDVI
+    
+    #Seleccion de imagen
+    if (IO==True) & (opcion==1): #NDVI
+        ndvi_image, Valor = calculator.ndvi_calculation(stb_RED,stb_NIR)
+        client.publish("NDVI", Valor)
+        #rotate ndvi_image
+        #ndvi_image = np.flipud(ndvi_image)
+        "Se pinta la imagen con colormap de OpenCV. En mi caso, RAINBOW fue la mejor opción"
+        im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_RAINBOW)
+        #im_color = cv2.flip(im_color, 1)
+        #stb_RED = stb_RED[50:500, 0:650]  
+        im_color = im_color[50:500, 0:650]
         send_IMG(im_color)
 
-    elif(IO==True)&(opcion==2): #RED
-        send_IMG(stb_RED)
+    elif(IO==True) & (opcion==2): #NDRE
+        ndvi_image, Valor = calculator.ndvi_calculation(stb_RED,stb_NIR)
+        client.publish("NDVI", Valor)
+        im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_RAINBOW)  
+        im_color = im_color[50:500, 0:650]
+        send_IMG(im_color)
     
-    elif(IO==True)&(opcion==1): #NIR
-        send_IMG(stb_NIR)
+    elif(IO==True) & (opcion==3): #MSAVI2 
+        ndvi_image, Valor = calculator.msavi2_calculation(stb_RED,stb_NIR)
+        client.publish("NDVI", Valor)
+        im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_RAINBOW)  
+        im_color = im_color[50:500, 0:650]
+        send_IMG(im_color)
 
-    elif(IO==True)&(opcion==6): #RGB #corregir
-        send_IMG(stb_NIR)
-
-    elif(IO==True)&(opcion==5): #REDGE
-        send_IMG(stb_RED)
-    
-    elif(IO==True)&(opcion==4): #GREEN
-        send_IMG(stb_NIR)
+    elif(IO==True) & (opcion==4): #RGB
+        #merged_fix_stb = merged_fix_stb[50:500, 0:650] si no es necesario, borrar
+        send_IMG(merged_fix_stb)
 
     
     
