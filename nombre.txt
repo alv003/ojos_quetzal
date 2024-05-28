@@ -1,68 +1,40 @@
-<(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/master/deb/update-nodejs-and-nodered)
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+
+# Cargar las imágenes
+image1 = cv2.imread(r'WhatsApp Image 2024-05-28 at 17.12.07.jpeg')
+image2 = cv2.imread(r'WhatsApp Image 2024-05-28 at 17.13.23.jpeg')
 
 
 
-#Funcion para tomar 1 fotografia usando la clase NDVICalculator y guardar la imagen
-counter = 0
-def take_photo():
-    global counter
-    frame0 = cam0.capture_array()
-    frame1 = cam1.capture_array()
+if image1.shape != image2.shape:
+    # Resize the smaller image to match the larger one
+    (h, w) = np.maximum(image1.shape[:2], image2.shape[:2])
+    image1 = cv2.resize(image1, (w, h))
+    image2 = cv2.resize(image2, (w, h))
 
-    pframe0 = cv2.cvtColor(frame0,cv2.COLOR_BGR2GRAY)
-    pframe1 = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
+if image1.shape[-1] == 3:  # Check if image1 has 3 channels (RGB)
+    image1 = cv2.cvtColor(image1, cv2.COLOR_BGR2RGBA)  # Convert to RGBA if RGB
+    image2 = cv2.cvtColor(image2, cv2.COLOR_BGR2RGBA)  # Convert to RGBA if RGB
 
-    correccion_img = Correccion()
-    calculator = NDVICalculator()
+# Set alpha channel (transparency) of image2 (adjust alpha values as needed)
+image2[:, :, 3] = (image2[:, :, 0] > 128) * 255  # Example: Make dark areas of image2 transparent
+# Crear una imagen en blanco
+result_width = image1.shape[1] + image2.shape[1]
+result_height = max(image1.shape[0], image2.shape[0])
+result_img = np.zeros((result_height, result_width, 4), dtype=np.uint8)  # Explicitly allocate 4 channels and set data type
 
-    #define image size
-    width = 700
-    height = 500
-
-    # Reading images
-    Img_RED = pframe0
-    Img_NIR = pframe1
-
-    # Create a BGR image with the red and nir
-    merged_fix_bad = cv2.merge((Img_RED,Img_RED,Img_NIR)) # First image, misaligned
-    merged_fix_bad = cv2.resize(merged_fix_bad, (700, 500), interpolation=cv2.INTER_LINEAR)
-    # Assuming merged_fix_bad is supposed to be an RGB image
-
-    stb_NIR, stb_RED =  correccion_img.img_alignment_sequoia(Img_NIR, Img_RED, width, height)
-    merged_fix_stb = cv2.merge((stb_RED,stb_RED, stb_NIR))
-    ndvi_image, Valor = calculator.ndvi_calculation(stb_RED,stb_NIR)
-    ###client.publish("NDVI", Valor)
-    #rotate ndvi_image
-    ndvi_image = np.flipud(ndvi_image)
-    "Se pinta la imagen con colormap de OpenCV. En mi caso, RAINBOW fue la mejor opción"
-    im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_RAINBOW)
-    #im_color = cv2.flip(im_color, 1)
-
-    stb_RED = stb_RED[50:500, 0:650] 
-    im_color = im_color[50:500, 0:650] 
-
-    mandarfotos = send_IMG(im_color)
-
-    #Crea la imagen
-    filename = f"imagen_{counter}.jpg"
-    cv2.imwrite(filename, mandarfotos)
-    counter += 1
-
-Traceback (most recent call last):
-  File "/home/kou/Desktop/Final.py", line 410, in <module>
-    send_IMG(merged_fix_stb)
-  File "/home/kou/Desktop/Final.py", line 113, in send_IMG
-    plt.imsave(buf, img, format='png') 
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3/dist-packages/matplotlib/pyplot.py", line 2136, in imsave
-    return matplotlib.image.imsave(fname, arr, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3/dist-packages/matplotlib/image.py", line 1630, in imsave
-    rgba = sm.to_rgba(arr, bytes=True)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3/dist-packages/matplotlib/cm.py", line 490, in to_rgba
-    raise ValueError("Third dimension must be 3 or 4")
-ValueError: Third dimension must be 3 or 4
-*   
+# Overlay with transparency
+result_img[:image1.shape[0], :image1.shape[1], :] = image1
+result_img[:image2.shape[0], :image2.shape[1], :4] = image2
 
 
+result_img = result_img.astype(np.uint8)
+result_img = cv2.cvtColor(result_img, cv2.COLOR_RGBA2BGRA)
+
+
+
+# Mostrar la imagen
+plt.imshow(result_img)
+plt.show()
