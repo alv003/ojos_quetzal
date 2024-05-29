@@ -23,15 +23,15 @@ IO=False #empieza el programa sin la camara activada
 opcion=0 #opcion de mostrar imagen
 
 #Grados de Filtros IR
-in1= 110 
-in2= 100 
+in1= 75
+in2= 105
 
-out1=153
-out2=153
+out1=130
+out2=160
 
 #Grados pasa bandas
-rRED= 57  
-rEDGE= 97 
+rRED= 55  
+rEDGE= 95 
 
 lNIR=89   
 lGREEN=55 
@@ -50,6 +50,10 @@ servo_max = 610  # Max pulse length out of 4096
 # Set frequency to 60hz, good for servos.
 pwm.set_pwm_freq(60)
 
+#Contador
+counter = 0
+retornoN = ''
+r = random.randint(0,1000)
 
 #define image size
 width = 700
@@ -111,7 +115,7 @@ client.subscribe("data")                #Tópico que se suscribe
 def send_IMG(img):
 
     buf = io.BytesIO()
-    plt.imsave(buf, img) #, format='png'
+    plt.imsave(buf, img, format='png') #
     buf.seek(0)
     image_data = buf.getvalue()
     encoded_image = base64.b64encode(image_data).decode('utf-8')
@@ -191,9 +195,9 @@ class ICalculator:
         rd=2
         
         Valor = round(np.mean(matrix),3)
-        
-        vd=((Valor-matrix.min())*rd/ro)-1
-        vd=round(vd,2)
+        #vd = round(np.percentile(matrix, 98),3)
+        #vd=((Valor-matrix.min())*rd/ro)-1
+        #vd=round(vd,2)
 
         #print(vd) #validar    
 
@@ -204,7 +208,7 @@ class ICalculator:
         ndvi = ndvi.round()
         ndvi_image = np.array(ndvi, dtype=np.uint8)
 
-        return ndvi_image, vd
+        return ndvi_image, Valor
 
     #NMSAVI2 CALCULATOR
     def msavi2_calculation(self, img_RED, img_NIR, width=700, height=500):
@@ -324,19 +328,24 @@ def posicion(grados1, grados2, servo):
 #RED EDGE & GREEN
 #posicion(rEDGE, lGREEN, 2)
 
-
 #-----------------------------------------------------------------------------------------------------------------------------------
-#Funcion para posicionar servo
+#Funcion para tomar fotos
 
-def foto(): 
-    r = random.randint(0,999)
-
-    cam0.start_and_capture_files("test"+str(r)+".jpg",initial_delay=0.1, delay=0.1, num_files=1)#cam derecha 
-    cam1.start_and_capture_files("test1"+str(r)+".jpg",initial_delay=0.1, delay=0.1, num_files=1)#cam izquierda 
-    cam0.close()
-    cam1.close()
-    cam0.start()
-    cam1.start()
+def take_photo(foto, foto2, valor):
+    global counter
+    valor = str(valor)
+    print(valor)
+    mandarfotos = foto
+    #mandarfotos = cv2.cvtColor(foto,cv2.COLOR_BGR2RGB)
+    #mandarfotos = cv2.putText(mandarfotos, "Valor medido:"+valor, (20,30), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255,255,255),2)
+    #mandarfotos = cv2.putText(mandarfotos, "Valor medido:"+valor, (20,30), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255,255,255),2)
+    #Crea la imagen
+    #Crea la imagen
+    filename = f"imagen-"+str(r)+"_"+str(counter)+".jpg"
+    filename2 = f"imagen0-"+str(r)+"_"+str(counter)+".jpg"
+    cv2.imwrite(filename, mandarfotos)
+    cv2.imwrite(filename2, foto2)
+    counter += 1
 
 #-----------------------------------------------------------------------------------------------------------------------------------
 #MAIN
@@ -357,14 +366,14 @@ posicion(rout, lout, 2)
 
 while True:
 
-    frame0 = cam0.capture_array()
-    frame1 = cam1.capture_array()
+    pframe0 = cam0.capture_array()
+    pframe1 = cam1.capture_array()
 
-    pframe0 = cv2.cvtColor(frame0,cv2.COLOR_BGR2RGB)
-    pframe0 = cv2.cvtColor(pframe0,cv2.COLOR_RGB2BGR)
+    #pframe0 = cv2.cvtColor(frame0,cv2.COLOR_BGR2RGB)
+    #pframe0 = cv2.cvtColor(pframe0,cv2.COLOR_RGB2BGR)
 
-    pframe1 = cv2.cvtColor(frame1,cv2.COLOR_BGR2RGB)
-    pframe1 = cv2.cvtColor(pframe1,cv2.COLOR_RGB2BGR)
+    #pframe1 = cv2.cvtColor(frame1,cv2.COLOR_BGR2RGB)
+    #pframe1 = cv2.cvtColor(pframe1,cv2.COLOR_RGB2BGR)
    
     #try:
     correccion_img = Correccion()
@@ -385,40 +394,45 @@ while True:
         
     #Seleccion de imagen
     if (IO==True) & (opcion==1): #NDVI
-        ndvi_image, Valor = calculator.ndvi_calculation(stb_RED,stb_NIR)
+        retornoN = 1
+        ndvi_image, Valor = calculator.ndvi_calculation(pframe0,pframe1)
+        ndvi_image0, v = calculator.ndvi_calculation(stb_RED,stb_NIR)
         client.publish("NDVI", Valor)
         interpretacion(Valor)
         "Se pinta la imagen con colormap de OpenCV."
+        ndvi_image = cv2.cvtColor(ndvi_image0,cv2.COLOR_BGR2RGB)
         im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_JET)
         im_color = im_color[50:500, 0:650]
         send_IMG(im_color)
-
+        
     elif(IO==True) & (opcion==2): #NDRE
+        retornoN = 2
         ndvi_image, Valor = calculator.ndvi_calculation(stb_RED,stb_NIR)
         client.publish("NDVI", Valor)
         interpretacion(Valor)
-        im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_JET)  
+        im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_RAINBOW)  
         im_color = im_color[50:500, 0:650]
         send_IMG(im_color)
     
     elif(IO==True) & (opcion==3): #MSAVI2 
+        retornoN = 3
         ndvi_image, Valor = calculator.msavi2_calculation(stb_RED,stb_NIR)
         client.publish("NDVI", Valor)
         interpretacion(Valor)
-        im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_JET)  
+        im_color = cv2.applyColorMap(ndvi_image, cv2.COLORMAP_RAINBOW)  
         im_color = im_color[50:500, 0:650]
         send_IMG(im_color)
 
     elif(IO==True) & (opcion==4): #RGB
-        send_IMG(frame0)
+        Valor = 0
+        retornoN = 4
+        im_color = frame0
+        send_IMG(im_color)
         interpretacion(-2)
         client.publish("NDVI", "0")
 
-    elif(IO==False) & (opcion==7): #RGB
-        client.publish("inter", "Tomando fotos")
-        foto()
-        interpretacion(-2)
-        client.publish("inter", "tomadas")
-
+    if(opcion == 7):
+        take_photo(pframe0, pframe1, Valor)
+        opcion = retornoN
     
     
